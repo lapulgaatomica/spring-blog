@@ -22,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
@@ -104,8 +105,9 @@ public class PostsControllerTest {
     @Test
     public  void updateBlogPost() throws Exception{
         Posts post = new Posts("test post");
-        postsService.newBlogPost(post);
-        Optional<Posts> expected = Optional.of(new Posts(1L, "test post updated", LocalDateTime.now(), LocalDateTime.now()));
+//        postsService.newBlogPost(post);
+        Optional<Posts> expected = Optional.of(
+                new Posts(1L, "test post updated", LocalDateTime.now(), LocalDateTime.now()));
         given(postsService
                 .updateBlogPost(1L, post))
                 .willReturn(expected);
@@ -120,5 +122,15 @@ public class PostsControllerTest {
                 jsonOptionalBlogPost.write(
                         expected
                 ).getJson());
+    }
+
+    @Test
+    public void deleteBlogPost() throws Exception{
+        Posts post = new Posts("test post");
+
+        MockHttpServletResponse response = mvc.perform(
+                delete("/posts/1")).andReturn().getResponse();
+
+        then(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
