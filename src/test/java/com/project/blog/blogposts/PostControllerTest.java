@@ -26,30 +26,30 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
-@WebMvcTest(PostsController.class)
-public class PostsControllerTest {
+@WebMvcTest(PostController.class)
+public class PostControllerTest {
 
     @MockBean
-    private PostsService postsService;
+    private PostService postService;
 
     @Autowired
     private MockMvc mvc;
 
     @Autowired
-    private JacksonTester<List<Posts>> jsonBlogPostsList;
+    private JacksonTester<List<Post>> jsonBlogPostsList;
 
     @Autowired
-    private JacksonTester<Optional<Posts>> jsonOptionalBlogPost;
+    private JacksonTester<Optional<Post>> jsonOptionalBlogPost;
 
     @Autowired
-    private JacksonTester<Posts> jsonBlogPost;
+    private JacksonTester<Post> jsonBlogPost;
 
 
     @Test
     public void getBlogPosts() throws Exception{
-        Posts posts = new Posts("test post");
-        List<Posts> newPosts = List.of(posts);
-        given(postsService
+        Post post = new Post("test post");
+        List<Post> newPosts = List.of(post);
+        given(postService
                 .getBlogPosts())
                 .willReturn(newPosts);
 
@@ -65,9 +65,9 @@ public class PostsControllerTest {
 
     @Test
     public void getBlogPost() throws Exception{
-        Posts posts = new Posts("test post");
-        Optional<Posts> optionalPost = Optional.of(posts);
-        given(postsService
+        Post post = new Post("test post");
+        Optional<Post> optionalPost = Optional.of(post);
+        given(postService
                 .getBlogPost(1L))
                 .willReturn(optionalPost);
 
@@ -83,10 +83,10 @@ public class PostsControllerTest {
 
     @Test
     public void newBlogPost() throws Exception{
-        Posts post = new Posts("test post");
-        Posts postWithDateAdded  = new Posts("test post");
+        Post post = new Post("test post");
+        Post postWithDateAdded  = new Post("test post");
         postWithDateAdded.setDateCreated(post.getDateCreated());
-        given(postsService
+        given(postService
                 .newBlogPost(post))
                 .willReturn(postWithDateAdded);
 
@@ -104,11 +104,11 @@ public class PostsControllerTest {
 
     @Test
     public  void updateBlogPost() throws Exception{
-        Posts post = new Posts("test post");
+        Post post = new Post("test post");
 //        postsService.newBlogPost(post);
-        Optional<Posts> expected = Optional.of(
-                new Posts(1L, "test post updated", LocalDateTime.now(), LocalDateTime.now()));
-        given(postsService
+        Optional<Post> expected = Optional.of(
+                new Post(1L, "test post updated", LocalDateTime.now(), LocalDateTime.now()));
+        given(postService
                 .updateBlogPost(1L, post))
                 .willReturn(expected);
 
@@ -126,7 +126,7 @@ public class PostsControllerTest {
 
     @Test
     public void deleteBlogPost() throws Exception{
-        Posts post = new Posts("test post");
+        Post post = new Post("test post");
 
         MockHttpServletResponse response = mvc.perform(
                 delete("/posts/1")).andReturn().getResponse();

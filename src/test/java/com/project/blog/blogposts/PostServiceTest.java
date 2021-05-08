@@ -14,56 +14,56 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class PostsServiceTest {
+public class PostServiceTest {
 
     @Mock
-    private PostsRepository postsRepository;
-    private PostsService postsService;
+    private PostRepository postRepository;
+    private PostService postService;
 
     @BeforeEach
     void setUp() {
-        postsService = new PostsServiceImpl(postsRepository);
+        postService = new PostServiceImpl(postRepository);
     }
 
     @Test
     public void getBlogPosts(){
         // When
-        postsService.getBlogPosts();
+        postService.getBlogPosts();
 
         // Then
-        verify(postsRepository).findAll();
+        verify(postRepository).findAll();
     }
 
     @Test
     public void getBlogPost(){
         // When
-        postsService.getBlogPost(1L);
+        postService.getBlogPost(1L);
 
         // Then
-        verify(postsRepository).findById(1L);
+        verify(postRepository).findById(1L);
     }
 
     @Test
     public void newBlogPost(){
         // Given
-        Posts post = new Posts("blog post");
+        Post post = new Post("blog post");
 
         // When
-        postsService.newBlogPost(post);
+        postService.newBlogPost(post);
 
         // Then
-        verify(postsRepository).save(post);
+        verify(postRepository).save(post);
     }
 
     @Test
     public void updateBlogPost(){
         long id =  1;
-        Posts post = new Posts("blog post");
+        Post post = new Post("blog post");
         // Given
-        given(postsRepository.findById(id)).willReturn(Optional.of(post));
+        given(postRepository.findById(id)).willReturn(Optional.of(post));
 
         // When
-        postsService.updateBlogPost(id, post);
+        postService.updateBlogPost(id, post);
 
         //
         assertThat(Optional.of(post)).isPresent();
@@ -72,10 +72,10 @@ public class PostsServiceTest {
     @Test
     public void deleteBlogPost(){
         // When
-        postsService.deleteBlogPost(1L);
+        postService.deleteBlogPost(1L);
 
         // Then
-        verify(postsRepository).deleteById(1L);
+        verify(postRepository).deleteById(1L);
     }
 
 

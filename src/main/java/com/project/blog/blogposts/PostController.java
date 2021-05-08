@@ -11,35 +11,35 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/posts")
-public class PostsController {
+public class PostController {
 
-    private final PostsService postsService;
+    private final PostService postService;
 
     @GetMapping
-    public ResponseEntity<List<Posts>> getBlogPosts(){
-        return ResponseEntity.status(HttpStatus.OK).body(postsService.getBlogPosts());
+    public ResponseEntity<List<Post>> getBlogPosts(){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getBlogPosts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Posts>> getBlogPost(@PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(postsService.getBlogPost(id));
+    public ResponseEntity<Optional<Post>> getBlogPost(@PathVariable("id") Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getBlogPost(id));
     }
 
     @PostMapping
-    public ResponseEntity<Posts> newBlogPost(@RequestBody Posts post){
-        Posts newPost = postsService.newBlogPost(post);
+    public ResponseEntity<Post> newBlogPost(@RequestBody Post post){
+        Post newPost = postService.newBlogPost(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(newPost);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Optional<Posts>> updateBlogPost(@PathVariable("id") Long id, @RequestBody Posts post){
-        Optional<Posts> updatedPost = postsService.updateBlogPost(id, post);
+    public ResponseEntity<Optional<Post>> updateBlogPost(@PathVariable("id") Long id, @RequestBody Post post){
+        Optional<Post> updatedPost = postService.updateBlogPost(id, post);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id){
-        postsService.deleteBlogPost(id);
+        postService.deleteBlogPost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

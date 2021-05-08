@@ -10,37 +10,37 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class PostsServiceImpl implements PostsService {
-    private final PostsRepository postsRepository;
+public class PostServiceImpl implements PostService {
+    private final PostRepository postRepository;
 
     @Override
-    public List<Posts> getBlogPosts() {
-        return postsRepository.findAll();
+    public List<Post> getBlogPosts() {
+        return postRepository.findAll();
     }
 
     @Override
-    public Posts newBlogPost(Posts post) {
+    public Post newBlogPost(Post post) {
         post.setDateCreated(LocalDateTime.now());
-        return postsRepository.save(post);
+        return postRepository.save(post);
     }
 
     @Override
-    public Optional<Posts> getBlogPost(Long id) {
-        return postsRepository.findById(id);
+    public Optional<Post> getBlogPost(Long id) {
+        return postRepository.findById(id);
     }
 
     @Transactional
     @Override
-    public Optional<Posts> updateBlogPost(Long id, Posts post) {
-        Posts updatedPost = postsRepository.findById(id)
+    public Optional<Post> updateBlogPost(Long id, Post post) {
+        Post updatedPost = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
-        updatedPost.setPost(post.getPost());
+        updatedPost.setContent(post.getContent());
         updatedPost.setDateEdited(LocalDateTime.now());
         return Optional.of(updatedPost);
     }
 
     @Override
     public void deleteBlogPost(Long id) {
-        postsRepository.deleteById(id);
+        postRepository.deleteById(id);
     }
 }
