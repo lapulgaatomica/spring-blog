@@ -23,7 +23,7 @@ public class Comment {
     private LocalDateTime dateCreated;
     private LocalDateTime dateEdited;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "POST_ID")
     private Post post;
 

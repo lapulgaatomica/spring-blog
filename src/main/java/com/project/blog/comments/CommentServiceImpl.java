@@ -4,10 +4,10 @@ import com.project.blog.posts.Post;
 import com.project.blog.posts.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,18 +24,25 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public Optional<Comment> getComment(Long id) {
-        return commentRepository.findById(id);
-    }
-
-    @Override
     public List<Comment> getCommentsByPostId(Long postId){
         return commentRepository.findByPostId(postId);
     }
 
     @Override
-    public Optional<Comment> updateComment(Long id, Comment comment) {
-        return Optional.empty();
+    public Comment getComment(Long id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+                "Comment with ID " + id + " does not exist"));
+        return comment;
+    }
+
+    @Transactional
+    @Override
+    public Comment updateComment(Long id, CommentDTO commentDTO) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+                "Comment with ID " + id + " does not exist"));
+        comment.setContent(commentDTO.getContent());
+        comment.setDateEdited(LocalDateTime.now());
+        return comment;
     }
 
     @Override

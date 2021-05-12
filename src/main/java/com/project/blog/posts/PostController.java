@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,7 +20,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Post>> getBlogPost(@PathVariable("id") Long id){
+    public ResponseEntity<Post> getBlogPost(@PathVariable("id") Long id){
         return ResponseEntity.status(HttpStatus.OK).body(postService.getBlogPost(id));
     }
 
@@ -31,8 +30,8 @@ public class PostController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Optional<Post>> updateBlogPost(@PathVariable("id") Long id, @RequestBody Post post){
-        Optional<Post> updatedPost = postService.updateBlogPost(id, post);
+    public ResponseEntity<Post> updateBlogPost(@PathVariable("id") Long id, @RequestBody PostDTO post){
+        Post updatedPost = postService.updateBlogPost(id, post);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 

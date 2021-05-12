@@ -18,8 +18,24 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.newComment(comment));
     }
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<List<Comment>> getCommentsByPost(@PathVariable("postId") Long postId){
+    @GetMapping
+    public ResponseEntity<List<Comment>> getCommentsByPost(@RequestParam("postId") Long postId){
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getCommentsByPostId(postId));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Comment> getComment(@PathVariable("id") Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.getComment(id));
+    }
+
+    @PatchMapping("/{id}/edit")
+    public ResponseEntity<Comment> updateComment(@PathVariable("id") Long id, @RequestBody CommentDTO commentDTO){
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(id, commentDTO));
+    }
+
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<?> deleteComment(@PathVariable("id") Long id){
+        commentService.deleteComment(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

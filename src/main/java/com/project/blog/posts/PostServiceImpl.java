@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,18 +25,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Optional<Post> getBlogPost(Long id) {
-        return postRepository.findById(id);
+    public Post getBlogPost(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
+        return post;
     }
 
     @Transactional
     @Override
-    public Optional<Post> updateBlogPost(Long id, Post post) {
+    public Post updateBlogPost(Long id, PostDTO post) {
         Post updatedPost = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
         updatedPost.setContent(post.getContent());
+        updatedPost.setTitle(post.getTitle());
         updatedPost.setDateEdited(LocalDateTime.now());
-        return Optional.of(updatedPost);
+        return updatedPost;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.project.blog.posts;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.project.blog.comments.Comment;
 import lombok.*;
 
@@ -14,7 +13,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"comments"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Post {
@@ -26,4 +25,16 @@ public class Post {
     private String content;
     private LocalDateTime dateCreated;
     private LocalDateTime dateEdited;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "post")
+    private Set<Comment> comments;
+
+    public Post(Long id, String title, String content, LocalDateTime dateCreated, LocalDateTime dateEdited) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.dateCreated = dateCreated;
+        this.dateEdited = dateEdited;
+    }
 }
