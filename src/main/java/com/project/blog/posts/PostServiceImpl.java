@@ -1,4 +1,4 @@
-package com.project.blog.blogposts;
+package com.project.blog.posts;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +19,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post newBlogPost(Post post) {
-        post.setDateCreated(LocalDateTime.now());
-        return postRepository.save(post);
+    public Post newBlogPost(PostDTO postDTO) {
+        return postRepository.save(new Post(
+                null, postDTO.getTitle(), postDTO.getContent(),
+                LocalDateTime.now(), null));
     }
 
     @Override

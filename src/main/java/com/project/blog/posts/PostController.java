@@ -1,4 +1,4 @@
-package com.project.blog.blogposts;
+package com.project.blog.posts;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,9 +26,8 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> newBlogPost(@RequestBody Post post){
-        Post newPost = postService.newBlogPost(post);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newPost);
+    public ResponseEntity<Post> newBlogPost(@RequestBody PostDTO post){
+        return ResponseEntity.status(HttpStatus.CREATED).body(postService.newBlogPost(post));
     }
 
     @PatchMapping("/{id}")

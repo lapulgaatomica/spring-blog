@@ -1,8 +1,12 @@
-package com.project.blog.blogposts;
+package com.project.blog.comments;
 
+import com.project.blog.posts.Post;
+import com.project.blog.posts.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,12 +19,18 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public Comment newComment(CommentDTO commentDTO) {
         Post post = postRepository.findById(commentDTO.getPostId()).get();
-        return commentRepository.save(new Comment(null, commentDTO.getContent(), post));
+        return commentRepository.save(new Comment(
+                null, commentDTO.getContent(), LocalDateTime.now(), null, post));
     }
 
     @Override
     public Optional<Comment> getComment(Long id) {
         return commentRepository.findById(id);
+    }
+
+    @Override
+    public List<Comment> getCommentsByPostId(Long postId){
+        return commentRepository.findByPostId(postId);
     }
 
     @Override
