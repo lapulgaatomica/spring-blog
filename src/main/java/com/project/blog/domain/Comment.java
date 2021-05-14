@@ -1,7 +1,5 @@
-package com.project.blog.comments;
+package com.project.blog.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.blog.posts.Post;
 import lombok.*;
 
 import javax.persistence.*;

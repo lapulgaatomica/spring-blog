@@ -1,7 +1,10 @@
-package com.project.blog.comments;
+package com.project.blog.services;
 
-import com.project.blog.posts.Post;
-import com.project.blog.posts.PostRepository;
+import com.project.blog.domain.Comment;
+import com.project.blog.domain.Post;
+import com.project.blog.dtos.CommentDTO;
+import com.project.blog.repositories.CommentRepository;
+import com.project.blog.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

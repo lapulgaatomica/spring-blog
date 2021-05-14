@@ -1,5 +1,6 @@
-package com.project.blog.posts;
+package com.project.blog.repositories;
 
+import com.project.blog.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,7 @@
-package com.project.blog.posts;
+package com.project.blog.services;
+
+import com.project.blog.domain.Post;
+import com.project.blog.dtos.PostDTO;
 
 import java.util.List;
 

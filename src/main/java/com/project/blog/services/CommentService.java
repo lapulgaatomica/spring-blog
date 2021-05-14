@@ -1,7 +1,9 @@
-package com.project.blog.comments;
+package com.project.blog.services;
+
+import com.project.blog.domain.Comment;
+import com.project.blog.dtos.CommentDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CommentService {
     public Comment newComment(CommentDTO commentDTO);

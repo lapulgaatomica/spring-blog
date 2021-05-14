@@ -1,4 +1,4 @@
-package com.project.blog.comments;
+package com.project.blog.dtos;
 
 import lombok.Value;
 

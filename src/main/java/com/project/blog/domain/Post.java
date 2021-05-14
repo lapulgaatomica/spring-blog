@@ -1,12 +1,10 @@
-package com.project.blog.posts;
+package com.project.blog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.blog.comments.Comment;
+import com.project.blog.domain.Comment;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Set;
 

@@ -1,5 +1,8 @@
-package com.project.blog.comments;
+package com.project.blog.controllers;
 
+import com.project.blog.dtos.CommentDTO;
+import com.project.blog.services.CommentService;
+import com.project.blog.domain.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
