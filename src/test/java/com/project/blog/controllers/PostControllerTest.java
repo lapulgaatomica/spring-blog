@@ -38,15 +38,18 @@ public class PostControllerTest {
     private MockMvc mvc;
 
     @Autowired
-    private JacksonTester<List<Post>> jsonBlogPostsList;
+    private JacksonTester<List<Post>> jsonPostResponseList;
 
     @Autowired
-    private JacksonTester<Post> jsonBlogPost;
+    private JacksonTester<Post> jsonPostResponse;
+
+    @Autowired
+    private JacksonTester<PostDTO> jsonPostRequest;
 
 
     @Test
     public void getBlogPosts() throws Exception{
-        Post post = new Post(null,"title", "test post", LocalDateTime.now(), null);
+        Post post = new Post(1L,"title", "test post", LocalDateTime.now(), null);
         List<Post> newPosts = List.of(post);
         given(postService
                 .getBlogPosts())
@@ -57,15 +60,14 @@ public class PostControllerTest {
 
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         then(response.getContentAsString()).isEqualTo(
-                jsonBlogPostsList.write(
+                jsonPostResponseList.write(
                         newPosts
                 ).getJson());
     }
 
     @Test
     public void getBlogPost() throws Exception{
-        Post post = new Post(null,"title", "test post", LocalDateTime.now(), null);
-//        Optional<Post> optionalPost = Optional.of(post);
+        Post post = new Post(1L,"title", "test post", LocalDateTime.now(), null);
         given(postService
                 .getBlogPost(1L))
                 .willReturn(post);
@@ -75,7 +77,7 @@ public class PostControllerTest {
 
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         then(response.getContentAsString()).isEqualTo(
-                jsonBlogPost.write(
+                jsonPostResponse.write(
                         post
                 ).getJson());
     }
@@ -83,7 +85,7 @@ public class PostControllerTest {
     @Test
     public void newBlogPost() throws Exception{
         PostDTO post = new PostDTO("title", "test post");
-        Post postWithDateAdded  = new Post(null,"title", "test post", LocalDateTime.now(), null);
+        Post postWithDateAdded  = new Post(1L,"title", "test post", LocalDateTime.now(), null);
 
         given(postService
                 .newBlogPost(post))
@@ -91,12 +93,12 @@ public class PostControllerTest {
 
         MockHttpServletResponse response = mvc.perform(
                 post("/posts").contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonBlogPost.write(postWithDateAdded).getJson()))
+                        .content(jsonPostRequest.write(post).getJson()))
                 .andReturn().getResponse();
 
         then(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         then(response.getContentAsString()).isEqualTo(
-                jsonBlogPost.write(
+                jsonPostResponse.write(
                         postWithDateAdded
                 ).getJson());
     }
@@ -111,20 +113,18 @@ public class PostControllerTest {
 
         MockHttpServletResponse response = mvc.perform(
                 patch("/posts/1").contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonBlogPost.write(expected).getJson()))
+                        .content(jsonPostRequest.write(post).getJson()))
                 .andReturn().getResponse();
 
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         then(response.getContentAsString()).isEqualTo(
-                jsonBlogPost.write(
+                jsonPostResponse.write(
                         expected
                 ).getJson());
     }
 
     @Test
     public void deleteBlogPost() throws Exception{
-        Post post = new Post(null,"title", "test post", LocalDateTime.now(), null);
-
         MockHttpServletResponse response = mvc.perform(
                 delete("/posts/1")).andReturn().getResponse();
 

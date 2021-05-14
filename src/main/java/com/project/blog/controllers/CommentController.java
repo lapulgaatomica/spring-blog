@@ -31,12 +31,12 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.getComment(id));
     }
 
-    @PatchMapping("/{id}/edit")
+    @PatchMapping("/{id}")
     public ResponseEntity<Comment> updateComment(@PathVariable("id") Long id, @RequestBody CommentDTO commentDTO){
         return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(id, commentDTO));
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteComment(@PathVariable("id") Long id){
         commentService.deleteComment(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
