@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = {"post"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
@@ -21,7 +21,7 @@ public class Comment {
     private LocalDateTime dateCreated;
     private LocalDateTime dateEdited;
 
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = CascadeType.REFRESH, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;
 
