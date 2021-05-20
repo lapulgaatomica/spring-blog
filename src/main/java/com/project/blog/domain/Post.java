@@ -1,7 +1,6 @@
 package com.project.blog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.project.blog.domain.Comment;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

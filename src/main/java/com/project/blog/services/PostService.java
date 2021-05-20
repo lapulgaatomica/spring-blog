@@ -2,13 +2,15 @@ package com.project.blog.services;
 
 import com.project.blog.domain.Post;
 import com.project.blog.dtos.PostDTO;
+import com.project.blog.dtos.PostWithCommentsDTO;
 
 import java.util.List;
 
 public interface PostService {
-    public List<Post> getBlogPosts();
-    public Post newBlogPost(PostDTO postDTO);
-    public Post getBlogPost(Long id);
-    public Post updateBlogPost(Long id, PostDTO post);
-    public void deleteBlogPost(Long id);
+    List<Post> getBlogPosts();
+    Post newBlogPost(PostDTO postDTO);
+    Post getBlogPost(Long id);
+    Post updateBlogPost(Long id, PostDTO post);
+    void deleteBlogPost(Long id);
+    PostWithCommentsDTO getBlogPostWithComment(Long id);
 }

@@ -1,7 +1,10 @@
 package com.project.blog.services;
 
+import com.project.blog.domain.Comment;
 import com.project.blog.domain.Post;
 import com.project.blog.dtos.PostDTO;
+import com.project.blog.dtos.PostWithCommentsDTO;
+import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<Post> getBlogPosts() {
@@ -48,5 +52,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deleteBlogPost(Long id) {
         postRepository.deleteById(id);
+    }
+
+    @Override
+    public PostWithCommentsDTO getBlogPostWithComment(Long id){
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
+        List<Comment> comments = commentRepository.findByPostId(id);
+
+        return new PostWithCommentsDTO(
+                post.getId(), post.getTitle(), post.getContent(), post.getDateCreated(),
+                post.getDateEdited(), comments);
     }
 }

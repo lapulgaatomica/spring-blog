@@ -2,6 +2,7 @@ package com.project.blog.controllers;
 
 import com.project.blog.domain.Post;
 import com.project.blog.dtos.PostDTO;
+import com.project.blog.dtos.PostWithCommentsDTO;
 import com.project.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,5 +43,10 @@ public class PostController {
     public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id){
         postService.deleteBlogPost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/with-comments")
+    public ResponseEntity<PostWithCommentsDTO> getBlogPostWithComment(@PathVariable("id") Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getBlogPostWithComment(id));
     }
 }

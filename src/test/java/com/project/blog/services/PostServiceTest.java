@@ -2,6 +2,7 @@ package com.project.blog.services;
 
 import com.project.blog.domain.Post;
 import com.project.blog.dtos.PostDTO;
+import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,11 +23,14 @@ public class PostServiceTest {
 
     @Mock
     private PostRepository postRepository;
+
+    @Mock
+    private CommentRepository commentRepository;
     private PostService postService;
 
     @BeforeEach
     void setUp() {
-        postService = new PostServiceImpl(postRepository);
+        postService = new PostServiceImpl(postRepository, commentRepository);
     }
 
     @Test
