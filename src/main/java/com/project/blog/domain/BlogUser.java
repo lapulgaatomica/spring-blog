@@ -18,7 +18,7 @@ import java.util.Collections;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class BlogUser implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,7 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    public User(String username, String email, String password){
+    public BlogUser(String username, String email, String password){
         this.username = username;
         this.email = email;
         this.password = password;

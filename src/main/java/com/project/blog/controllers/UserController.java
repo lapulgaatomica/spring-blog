@@ -19,6 +19,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid UserDTO user){
-        return ResponseEntity.status(HttpStatus.OK).body(registrationService.register(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(registrationService.register(user));
     }
 }
