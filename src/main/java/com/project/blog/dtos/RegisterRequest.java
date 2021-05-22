@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class UserDTO {
+public class RegisterRequest {
     @NotNull
     @NotEmpty
     private String username, email, password;

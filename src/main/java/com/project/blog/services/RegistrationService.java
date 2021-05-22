@@ -1,7 +1,7 @@
 package com.project.blog.services;
 
-import com.project.blog.dtos.UserDTO;
+import com.project.blog.dtos.RegisterRequest;
 
 public interface RegistrationService {
-    String register(UserDTO user);
+    String register(RegisterRequest user);
 }
