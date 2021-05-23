@@ -1,7 +1,7 @@
 package com.project.blog.controllers;
 
 import com.project.blog.dtos.RegisterRequest;
-import com.project.blog.services.RegistrationService;
+import com.project.blog.services.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +15,10 @@ import javax.validation.Valid;
 @RestController
 public class AuthController {
 
-    private final RegistrationService registrationService;
+    private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest user){
-        return ResponseEntity.status(HttpStatus.CREATED).body(registrationService.register(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(user));
     }
 }
