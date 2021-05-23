@@ -27,7 +27,7 @@ public class SpringFoxConfig {
                 .title("Blog API")
                 .version("1.0")
                 .description("API for Blog Application")
-                .contact(new Contact("Odedoyin Akindele", "github.com/lapulgaatomica", "akindeleodedoyin@gmail.com"))
+                .contact(new Contact("Odedoyin Akindele", "https://www.github.com/lapulgaatomica", "akindeleodedoyin@gmail.com"))
                 .build();
     }
 }

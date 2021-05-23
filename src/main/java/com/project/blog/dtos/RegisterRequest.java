@@ -10,8 +10,6 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
-@EqualsAndHashCode
-@ToString
 public class RegisterRequest {
     @NotNull
     @NotEmpty
