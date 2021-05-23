@@ -1,5 +1,7 @@
 package com.project.blog.controllers;
 
+import com.project.blog.dtos.AuthenticationResponse;
+import com.project.blog.dtos.LoginRequest;
 import com.project.blog.dtos.RegisterRequest;
 import com.project.blog.services.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +22,10 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest user){
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(user));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest));
     }
 }
