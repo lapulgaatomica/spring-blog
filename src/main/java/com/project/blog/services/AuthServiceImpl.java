@@ -5,12 +5,7 @@ import com.project.blog.dtos.AuthenticationResponse;
 import com.project.blog.dtos.LoginRequest;
 import com.project.blog.dtos.RegisterRequest;
 import com.project.blog.repositories.UserRepository;
-import com.project.blog.security.JwtProvider;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +14,6 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final AuthenticationManager authenticationManager;
-    private final JwtProvider jwtProvider;
 
     @Override
     public String register(RegisterRequest registerRequest) {
@@ -45,10 +38,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthenticationResponse login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsername(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String authenticationToken = jwtProvider.generateToken(authentication);
-        return new AuthenticationResponse(authenticationToken, loginRequest.getUsername());
+        return null;
     }
 }
