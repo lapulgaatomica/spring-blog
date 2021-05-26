@@ -1,6 +1,6 @@
 package com.project.blog.services;
 
-import com.project.blog.domain.Comment;
+import com.project.blog.entities.Comment;
 import com.project.blog.dtos.CommentDTO;
 
 import java.util.List;

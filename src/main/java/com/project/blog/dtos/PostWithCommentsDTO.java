@@ -1,6 +1,6 @@
 package com.project.blog.dtos;
 
-import com.project.blog.domain.Comment;
+import com.project.blog.entities.Comment;
 import lombok.*;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.project.blog.domain;
+package com.project.blog.entities;
 
 import lombok.*;
 

@@ -1,6 +1,6 @@
 package com.project.blog.controllers;
 
-import com.project.blog.domain.Post;
+import com.project.blog.entities.Post;
 import com.project.blog.dtos.PostDTO;
 import com.project.blog.services.PostService;
 import org.junit.jupiter.api.Test;

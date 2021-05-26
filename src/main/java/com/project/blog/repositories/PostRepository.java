@@ -1,10 +1,7 @@
 package com.project.blog.repositories;
 
-import com.project.blog.domain.Post;
-import com.project.blog.dtos.PostWithCommentsDTO;
+import com.project.blog.entities.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository

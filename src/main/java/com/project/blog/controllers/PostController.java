@@ -1,6 +1,6 @@
 package com.project.blog.controllers;
 
-import com.project.blog.domain.Post;
+import com.project.blog.entities.Post;
 import com.project.blog.dtos.PostDTO;
 import com.project.blog.dtos.PostWithCommentsDTO;
 import com.project.blog.services.PostService;
@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> newBlogPost(@RequestBody PostDTO post){
+    public ResponseEntity<Post> newBlogPost(@RequestBody @Valid PostDTO post){
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.newBlogPost(post));
     }
 

@@ -1,10 +1,8 @@
 package com.project.blog.services;
 
-import com.project.blog.domain.BlogUser;
-import com.project.blog.dtos.AuthenticationResponse;
-import com.project.blog.dtos.LoginRequest;
-import com.project.blog.dtos.RegisterRequest;
-import com.project.blog.repositories.UserRepository;
+import com.project.blog.entities.BlogUser;
+import com.project.blog.dtos.RegistrationRequest;
+import com.project.blog.repositories.BlogUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,31 +11,26 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
+    private final BlogUserRepository blogUserRepository;
 
     @Override
-    public String register(RegisterRequest registerRequest) {
+    public String register(RegistrationRequest registrationRequest) {
         // Todo verify that email is valid
 
-        boolean usernameAlreadyExists = userRepository.findByUsername(registerRequest.getUsername()).isPresent();
-        boolean emailAlreadyExists = userRepository.findByEmail(registerRequest.getEmail()).isPresent();
+        boolean usernameAlreadyExists = blogUserRepository.findByUsername(registrationRequest.getUsername()).isPresent();
+        boolean emailAlreadyExists = blogUserRepository.findByEmail(registrationRequest.getEmail()).isPresent();
 
         if(usernameAlreadyExists || emailAlreadyExists){
             throw new IllegalStateException("Username or Email is already taken");
         }
 
         BlogUser user = new BlogUser();
-        user.setUsername(registerRequest.getUsername());
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setUsername(registrationRequest.getUsername());
+        user.setEmail(registrationRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 
-        userRepository.save(user);
+        blogUserRepository.save(user);
 
         return user.getEmail();
-    }
-
-    @Override
-    public AuthenticationResponse login(LoginRequest loginRequest) {
-        return null;
     }
 }

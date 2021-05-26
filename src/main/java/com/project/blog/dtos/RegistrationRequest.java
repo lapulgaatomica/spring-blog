@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @AllArgsConstructor
-public class RegisterRequest {
+public class RegistrationRequest {
     @NotNull
     @NotEmpty
     private String username, email, password;

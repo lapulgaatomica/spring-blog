@@ -1,7 +1,7 @@
 package com.project.blog.services;
 
-import com.project.blog.domain.Comment;
-import com.project.blog.domain.Post;
+import com.project.blog.entities.Comment;
+import com.project.blog.entities.Post;
 import com.project.blog.dtos.CommentDTO;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;

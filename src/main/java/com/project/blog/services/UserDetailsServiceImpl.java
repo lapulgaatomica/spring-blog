@@ -1,7 +1,7 @@
 package com.project.blog.services;
 
-import com.project.blog.domain.BlogUser;
-import com.project.blog.repositories.UserRepository;
+import com.project.blog.entities.BlogUser;
+import com.project.blog.repositories.BlogUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,11 +17,11 @@ import java.util.Collections;
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final BlogUserRepository blogUserRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        BlogUser user = userRepository.findByUsername(username)
+        BlogUser user = blogUserRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Username " + username + " not found!"));
 
         return new User(user.getUsername(), user.getPassword(), user.isEnabled(), user.isAccountNonExpired(),

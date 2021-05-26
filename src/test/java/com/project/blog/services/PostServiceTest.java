@@ -1,6 +1,6 @@
 package com.project.blog.services;
 
-import com.project.blog.domain.Post;
+import com.project.blog.entities.Post;
 import com.project.blog.dtos.PostDTO;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
