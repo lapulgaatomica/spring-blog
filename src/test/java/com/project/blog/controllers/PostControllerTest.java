@@ -1,5 +1,6 @@
 package com.project.blog.controllers;
 
+import com.project.blog.dtos.PostWithCommentsDTO;
 import com.project.blog.entities.Post;
 import com.project.blog.dtos.PostDTO;
 import com.project.blog.services.PostService;
@@ -46,6 +47,9 @@ public class PostControllerTest {
     @Autowired
     private JacksonTester<PostDTO> jsonPostRequest;
 
+    @Autowired
+    private JacksonTester<PostWithCommentsDTO> jsonPostWithCommentResponse;
+
 
     @Test
     public void getBlogPosts() throws Exception{
@@ -65,22 +69,22 @@ public class PostControllerTest {
                 ).getJson());
     }
 
-//    @Test
-//    public void getBlogPost() throws Exception{
-//        Post post = new Post(1L,"title", "test post", LocalDateTime.now(), null);
-//        given(postService
-//                .getBlogPost(1L))
-//                .willReturn(post);
-//
-//        MockHttpServletResponse response = mvc.perform(
-//                get("/posts/1")).andReturn().getResponse();
-//
-//        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-//        then(response.getContentAsString()).isEqualTo(
-//                jsonPostResponse.write(
-//                        post
-//                ).getJson());
-//    }
+    @Test
+    public void getBlogPost() throws Exception{
+        PostWithCommentsDTO post = new PostWithCommentsDTO(1L,"title", "test post", LocalDateTime.now(), null, List.of());
+        given(postService
+                .getBlogPostWithComment(1L))
+                .willReturn(post);
+
+        MockHttpServletResponse response = mvc.perform(
+                get("/posts/1")).andReturn().getResponse();
+
+        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getContentAsString()).isEqualTo(
+                jsonPostWithCommentResponse.write(
+                        post
+                ).getJson());
+    }
 
     @Test
     public void newBlogPost() throws Exception{

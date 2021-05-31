@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -42,20 +43,21 @@ public class PostServiceTest {
         verify(postRepository).findAll();
     }
 
-//    @Test
-//    public void getBlogPost(){
-//        long id =  1;
-//        PostDTO postDTO = new PostDTO("title", "blog post");
-//        Post post = new Post(null, postDTO.getTitle(), postDTO.getContent(), LocalDateTime.now(), null);
-//        // Given
-//        given(postRepository.findById(id)).willReturn(Optional.of(post));
-//
-//        // When
-//        postService.getBlogPost(1L);
-//
-//        // Then
-//        verify(postRepository).findById(1L);
-//    }
+    @Test
+    public void getBlogPostWithComment(){
+        long id =  1;
+        PostDTO postDTO = new PostDTO("title", "blog post");
+        Post post = new Post(null, postDTO.getTitle(), postDTO.getContent(), LocalDateTime.now(), null);
+        // Given
+        given(postRepository.findById(id)).willReturn(Optional.of(post));
+        given(commentRepository.findByPostId(id)).willReturn(List.of());
+
+        // When
+        postService.getBlogPostWithComment(1L);
+
+        // Then
+        verify(postRepository).findById(1L);
+    }
 
     @Test
     public void newBlogPost(){

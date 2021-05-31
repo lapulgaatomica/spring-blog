@@ -20,4 +20,6 @@ public class PostWithCommentsDTO {
     private LocalDateTime dateCreated;
     private LocalDateTime dateEdited;
     private List<Comment> comments;
+
+
 }

@@ -55,15 +55,6 @@ class CommentServiceTest {
         assertThat(capturedComment.getPost().getId()).isEqualTo(commentDTO.getPostId());
     }
 
-//    @Test
-//    public void canGetCommentsByPostId(){
-//        // When
-//        commentService.getCommentsByPostId(1L);
-//
-//        // Then
-//        verify(commentRepository).findByPostId(1L);
-//    }
-
     @Test
     public void canGetComment(){
         // Given
