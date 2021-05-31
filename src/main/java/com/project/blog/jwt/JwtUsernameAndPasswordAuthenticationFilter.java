@@ -26,6 +26,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     private final JwtConfigProperties jwtConfigProperties;
     private final SecretKey secretKey;
 
+
+
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
