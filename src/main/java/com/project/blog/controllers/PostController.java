@@ -25,8 +25,8 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getBlogPost(@PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(postService.getBlogPost(id));
+    public ResponseEntity<PostWithCommentsDTO> getBlogPost(@PathVariable("id") Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getBlogPostWithComment(id));
     }
 
     @PostMapping
@@ -44,10 +44,5 @@ public class PostController {
     public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id){
         postService.deleteBlogPost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @GetMapping("/{id}/with-comments")
-    public ResponseEntity<PostWithCommentsDTO> getBlogPostWithComment(@PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(postService.getBlogPostWithComment(id));
     }
 }

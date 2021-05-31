@@ -9,7 +9,6 @@ import java.util.List;
 public interface PostService {
     List<Post> getBlogPosts();
     Post newBlogPost(PostDTO postDTO);
-    Post getBlogPost(Long id);
     Post updateBlogPost(Long id, PostDTO post);
     void deleteBlogPost(Long id);
     PostWithCommentsDTO getBlogPostWithComment(Long id);

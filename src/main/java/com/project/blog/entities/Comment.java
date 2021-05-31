@@ -1,5 +1,6 @@
 package com.project.blog.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Comment {
     private LocalDateTime dateCreated;
     private LocalDateTime dateEdited;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REFRESH, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "POST_ID")
     private Post post;

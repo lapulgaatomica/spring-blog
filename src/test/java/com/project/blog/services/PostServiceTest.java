@@ -42,20 +42,20 @@ public class PostServiceTest {
         verify(postRepository).findAll();
     }
 
-    @Test
-    public void getBlogPost(){
-        long id =  1;
-        PostDTO postDTO = new PostDTO("title", "blog post");
-        Post post = new Post(null, postDTO.getTitle(), postDTO.getContent(), LocalDateTime.now(), null);
-        // Given
-        given(postRepository.findById(id)).willReturn(Optional.of(post));
-
-        // When
-        postService.getBlogPost(1L);
-
-        // Then
-        verify(postRepository).findById(1L);
-    }
+//    @Test
+//    public void getBlogPost(){
+//        long id =  1;
+//        PostDTO postDTO = new PostDTO("title", "blog post");
+//        Post post = new Post(null, postDTO.getTitle(), postDTO.getContent(), LocalDateTime.now(), null);
+//        // Given
+//        given(postRepository.findById(id)).willReturn(Optional.of(post));
+//
+//        // When
+//        postService.getBlogPost(1L);
+//
+//        // Then
+//        verify(postRepository).findById(1L);
+//    }
 
     @Test
     public void newBlogPost(){

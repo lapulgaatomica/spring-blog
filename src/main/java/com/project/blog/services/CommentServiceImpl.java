@@ -27,11 +27,6 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public List<Comment> getCommentsByPostId(Long postId){
-        return commentRepository.findByPostId(postId);
-    }
-
-    @Override
     public Comment getComment(Long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
                 "Comment with ID " + id + " does not exist"));

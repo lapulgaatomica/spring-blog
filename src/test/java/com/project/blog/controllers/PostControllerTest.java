@@ -65,22 +65,22 @@ public class PostControllerTest {
                 ).getJson());
     }
 
-    @Test
-    public void getBlogPost() throws Exception{
-        Post post = new Post(1L,"title", "test post", LocalDateTime.now(), null);
-        given(postService
-                .getBlogPost(1L))
-                .willReturn(post);
-
-        MockHttpServletResponse response = mvc.perform(
-                get("/posts/1")).andReturn().getResponse();
-
-        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(response.getContentAsString()).isEqualTo(
-                jsonPostResponse.write(
-                        post
-                ).getJson());
-    }
+//    @Test
+//    public void getBlogPost() throws Exception{
+//        Post post = new Post(1L,"title", "test post", LocalDateTime.now(), null);
+//        given(postService
+//                .getBlogPost(1L))
+//                .willReturn(post);
+//
+//        MockHttpServletResponse response = mvc.perform(
+//                get("/posts/1")).andReturn().getResponse();
+//
+//        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+//        then(response.getContentAsString()).isEqualTo(
+//                jsonPostResponse.write(
+//                        post
+//                ).getJson());
+//    }
 
     @Test
     public void newBlogPost() throws Exception{

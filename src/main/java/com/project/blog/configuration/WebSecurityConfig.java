@@ -39,6 +39,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/register")
                 .permitAll()
+                .antMatchers("/swagger-ui/**", "/webjars/**", "/**")
+                .permitAll()
                 .anyRequest()
                 .authenticated();
 
@@ -59,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     public JwtUsernameAndPasswordAuthenticationFilter jwtUsernameAndPasswordAuthenticationFilter() throws Exception {
-        JwtUsernameAndPasswordAuthenticationFilter filter = new JwtUsernameAndPasswordAuthenticationFilter(
+         JwtUsernameAndPasswordAuthenticationFilter filter = new JwtUsernameAndPasswordAuthenticationFilter(
                 authenticationManager(), jwtConfigProperties, secretKey);
         filter.setFilterProcessesUrl("/api/v1/login");
         return filter;

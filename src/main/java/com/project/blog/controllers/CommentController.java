@@ -12,18 +12,13 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/comment")
+@RequestMapping("/api/v1/comments")
 public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
     public ResponseEntity<Comment> newComment(@RequestBody CommentDTO comment){
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.newComment(comment));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Comment>> getCommentsByPost(@RequestParam("postId") Long postId){
-        return ResponseEntity.status(HttpStatus.OK).body(commentService.getCommentsByPostId(postId));
     }
 
     @GetMapping("/{id}")

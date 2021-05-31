@@ -78,28 +78,28 @@ class CommentControllerTest {
         );
     }
 
-    @Test
-    public void getCommentsByPost() throws Exception{
-        // Given
-        Post post = new Post(1L, "Post Title", "Post Content", LocalDateTime.now(), null);
-        Comment commentResponse = new Comment(
-                1L, "Comment Content", LocalDateTime.now(), null, post);
-        List<Comment> commentList = List.of(commentResponse);
-        given(commentService
-            .getCommentsByPostId(1L))
-            .willReturn(commentList);
-
-        // When
-        MockHttpServletResponse response = mvc.perform(
-                get("/comment/?postId=1")).andReturn().getResponse();
-
-        // Then
-        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        then(response.getContentAsString()).isEqualTo(
-                jsonCommentResponseList.write(
-                        commentList
-                ).getJson());
-    }
+//    @Test
+//    public void getCommentsByPost() throws Exception{
+//        // Given
+//        Post post = new Post(1L, "Post Title", "Post Content", LocalDateTime.now(), null);
+//        Comment commentResponse = new Comment(
+//                1L, "Comment Content", LocalDateTime.now(), null, post);
+//        List<Comment> commentList = List.of(commentResponse);
+//        given(commentService
+//            .getCommentsByPostId(1L))
+//            .willReturn(commentList);
+//
+//        // When
+//        MockHttpServletResponse response = mvc.perform(
+//                get("/comment/?postId=1")).andReturn().getResponse();
+//
+//        // Then
+//        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+//        then(response.getContentAsString()).isEqualTo(
+//                jsonCommentResponseList.write(
+//                        commentList
+//                ).getJson());
+//    }
 
     @Test
     public void getComment() throws Exception{

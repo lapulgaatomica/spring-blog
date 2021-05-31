@@ -32,11 +32,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post getBlogPost(Long id) {
+    public PostWithCommentsDTO getBlogPostWithComment(Long id){
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
-        return post;
+        List<Comment> comments = commentRepository.findByPostId(id);
+
+        return new PostWithCommentsDTO(
+                post.getId(), post.getTitle(), post.getContent(), post.getDateCreated(),
+                post.getDateEdited(), comments);
     }
+
 
     @Transactional
     @Override
@@ -54,14 +59,4 @@ public class PostServiceImpl implements PostService {
         postRepository.deleteById(id);
     }
 
-    @Override
-    public PostWithCommentsDTO getBlogPostWithComment(Long id){
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
-        List<Comment> comments = commentRepository.findByPostId(id);
-
-        return new PostWithCommentsDTO(
-                post.getId(), post.getTitle(), post.getContent(), post.getDateCreated(),
-                post.getDateEdited(), comments);
-    }
 }
