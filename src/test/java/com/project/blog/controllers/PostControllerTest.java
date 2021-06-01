@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -52,6 +53,7 @@ public class PostControllerTest {
 
 
     @Test
+    @WithUserDetails("dele")
     public void getBlogPosts() throws Exception{
         Post post = new Post(1L,"title", "test post", LocalDateTime.now(), null);
         List<Post> newPosts = List.of(post);

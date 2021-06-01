@@ -11,10 +11,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 @Entity
 @Getter
-@Setter
+//@Setter
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,11 +27,14 @@ public class BlogUser implements UserDetails {
     private String username;
     private String email;
     private String password;
+    private Set<? extends GrantedAuthority> grantedAuthorities;
 
-    public BlogUser(String username, String email, String password){
+    public BlogUser(String username, String email, String password,
+                    Set<? extends GrantedAuthority> grantedAuthorities){
         this.username = username;
         this.email = email;
         this.password = password;
+        this.grantedAuthorities = grantedAuthorities;
     }
 
     @Override
