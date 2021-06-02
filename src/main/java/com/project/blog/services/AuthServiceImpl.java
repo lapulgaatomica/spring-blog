@@ -34,8 +34,7 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 
-        user.setRoles(List.of(roleRepository.findByName(RoleName.USER).get(),
-                roleRepository.findByName(RoleName.POST_MODERATOR).get()));
+        user.setRoles(List.of(roleRepository.findByName(RoleName.USER).get()));
 
         blogUserRepository.save(user);
 

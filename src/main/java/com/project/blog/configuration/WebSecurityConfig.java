@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
 
+import static com.project.blog.entities.rolesandpermissions.RoleName.POST_MODERATOR;
+
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
@@ -42,7 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**", "/webjars/**", "/**")
                 .permitAll()
                 .anyRequest()
-                .authenticated();
+                .hasRole(POST_MODERATOR.name());
+//                .authenticated();
 
 
     }

@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -40,8 +41,12 @@ public class BlogUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("USER");
-        return Collections.singletonList(authority);
+//        return roles.stream().map(
+//                role -> new SimpleGrantedAuthority(role.getName().name())
+//        ).collect(Collectors.toList());
+        return roles.stream().map(
+                role -> role.getName().getGrantedAuthorities()
+        ).collect(Collectors.toList()).get(0);
     }
 
     @Override
