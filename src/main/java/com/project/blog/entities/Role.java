@@ -1,5 +1,6 @@
-package com.project.blog.entities.rolesandpermissions;
+package com.project.blog.entities;
 
+import com.project.blog.entities.enums.RoleName;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

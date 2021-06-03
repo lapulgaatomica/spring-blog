@@ -1,7 +1,7 @@
 package com.project.blog.repositories;
 
-import com.project.blog.entities.rolesandpermissions.Role;
-import com.project.blog.entities.rolesandpermissions.RoleName;
+import com.project.blog.entities.Role;
+import com.project.blog.entities.enums.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

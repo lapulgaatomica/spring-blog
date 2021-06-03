@@ -2,15 +2,15 @@ package com.project.blog.services;
 
 import com.project.blog.entities.BlogUser;
 import com.project.blog.dtos.RegistrationRequest;
-import com.project.blog.entities.rolesandpermissions.Role;
-import com.project.blog.entities.rolesandpermissions.RoleName;
+import com.project.blog.entities.Role;
+import com.project.blog.entities.enums.RoleName;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import static com.project.blog.entities.rolesandpermissions.RoleName.*;
+import static com.project.blog.entities.enums.RoleName.*;
 
 @AllArgsConstructor
 @Service

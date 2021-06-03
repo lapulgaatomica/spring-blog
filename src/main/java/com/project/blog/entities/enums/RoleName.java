@@ -1,4 +1,4 @@
-package com.project.blog.entities.rolesandpermissions;
+package com.project.blog.entities.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

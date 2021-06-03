@@ -1,6 +1,5 @@
 package com.project.blog.entities;
 
-import com.project.blog.entities.rolesandpermissions.Role;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

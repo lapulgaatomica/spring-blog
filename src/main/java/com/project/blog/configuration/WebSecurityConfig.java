@@ -18,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
 
-import static com.project.blog.entities.rolesandpermissions.RoleName.SUPER_ADMIN;
+import static com.project.blog.entities.enums.RoleName.SUPER_ADMIN;
 
 @Configuration
 @AllArgsConstructor
