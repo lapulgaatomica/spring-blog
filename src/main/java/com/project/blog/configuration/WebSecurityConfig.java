@@ -18,6 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
 
+import static com.project.blog.entities.rolesandpermissions.RoleName.SUPER_ADMIN;
+
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
@@ -39,12 +41,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/register")
                 .permitAll()
-                .antMatchers("/swagger-ui/**", "/webjars/**", "/**")
-                .permitAll()
                 .anyRequest()
-                .authenticated();
-
-
+                .hasRole(SUPER_ADMIN.name());
+//                .authenticated();
     }
 
     @Override

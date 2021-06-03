@@ -2,6 +2,7 @@ package com.project.blog.services;
 
 import com.project.blog.entities.BlogUser;
 import com.project.blog.dtos.RegistrationRequest;
+import com.project.blog.entities.rolesandpermissions.Role;
 import com.project.blog.entities.rolesandpermissions.RoleName;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.RoleRepository;
@@ -9,7 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import static com.project.blog.entities.rolesandpermissions.RoleName.*;
 
 @AllArgsConstructor
 @Service
@@ -34,11 +35,20 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 
-        user.setRoles(List.of(roleRepository.findByName(RoleName.USER).get(),
-                roleRepository.findByName(RoleName.POST_MODERATOR).get()));
+        Role role;
 
+        if(blogUserRepository.count() == 0){
+            if(roleRepository.count() == 0){
+                for(RoleName roleName: RoleName.values()){
+                    roleRepository.save(new Role(roleName));
+                }
+            }
+            role = roleRepository.findByName(SUPER_ADMIN).get();
+        }else{
+            role = roleRepository.findByName(USER).get();
+        }
+        user.setRole(role);
         blogUserRepository.save(user);
-
         return user.getEmail();
     }
 }
