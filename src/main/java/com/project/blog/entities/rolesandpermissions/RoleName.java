@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 @Getter
 public enum RoleName {
     USER(Set.of()),
-    POST_MODERATOR(Set.of(UserPermission.POST_WRITE)),
     COMMENT_MODERATOR(Set.of(UserPermission.COMMENT_WRITE)),
+    POST_MODERATOR(Set.of(UserPermission.POST_WRITE)),
     SUPER_ADMIN(Set.of(UserPermission.POST_WRITE,
             UserPermission.COMMENT_WRITE,
             UserPermission.USER_WRITE));
