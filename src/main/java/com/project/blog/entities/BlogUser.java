@@ -3,15 +3,10 @@ package com.project.blog.entities;
 import com.project.blog.entities.rolesandpermissions.Role;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -28,9 +23,8 @@ public class BlogUser implements UserDetails {
     private String email;
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "blog_user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    @ManyToOne
+    private Role role;
 
 
     public BlogUser(String username, String email, String password){
@@ -41,12 +35,7 @@ public class BlogUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return roles.stream().map(
-//                role -> new SimpleGrantedAuthority(role.getName().name())
-//        ).collect(Collectors.toList());
-        return roles.stream().map(
-                role -> role.getName().getGrantedAuthorities()
-        ).collect(Collectors.toList()).get(0);
+        return role.getName().getGrantedAuthorities();
     }
 
     @Override

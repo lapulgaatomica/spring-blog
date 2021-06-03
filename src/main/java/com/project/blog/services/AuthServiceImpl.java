@@ -10,9 +10,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.project.blog.entities.rolesandpermissions.RoleName.*;
 
 @AllArgsConstructor
@@ -38,17 +35,19 @@ public class AuthServiceImpl implements AuthService {
         user.setEmail(registrationRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 
-        List<Role> roles = new ArrayList<>();
+        Role role;
 
         if(blogUserRepository.count() == 0){
             if(roleRepository.count() == 0){
-                roleRepository.saveAll(List.of(new Role(USER), new Role(COMMENT_MODERATOR), new Role(POST_MODERATOR), new Role(SUPER_ADMIN)));
+                for(RoleName roleName: RoleName.values()){
+                    roleRepository.save(new Role(roleName));
+                }
             }
-            roles.add(roleRepository.findByName(SUPER_ADMIN).get());
+            role = roleRepository.findByName(SUPER_ADMIN).get();
         }else{
-            roles.add(roleRepository.findByName(USER).get());
+            role = roleRepository.findByName(USER).get();
         }
-        user.setRoles(roles);
+        user.setRole(role);
         blogUserRepository.save(user);
         return user.getEmail();
     }

@@ -2,7 +2,6 @@ package com.project.blog.entities.rolesandpermissions;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 
@@ -16,8 +15,6 @@ public class Role {
 	private Long id;
 
 	@Enumerated(EnumType.STRING)
-//	@NaturalId
-//	@Column(name = "name")
 	private RoleName name;
 
 	public Role(RoleName name) {
