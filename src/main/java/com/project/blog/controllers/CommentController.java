@@ -6,6 +6,7 @@ import com.project.blog.entities.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_USER') or hasAuthority('comment:write')")
     public ResponseEntity<?> deleteComment(@PathVariable("id") Long id){
         commentService.deleteComment(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

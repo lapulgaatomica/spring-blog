@@ -8,8 +8,10 @@ import com.project.blog.services.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -18,11 +20,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.crypto.SecretKey;
 
-import static com.project.blog.entities.enums.RoleName.SUPER_ADMIN;
-
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsServiceImpl;
@@ -39,11 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(jwtUsernameAndPasswordAuthenticationFilter())
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfigProperties), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/api/v1/register")
-                .permitAll()
-                .anyRequest()
-                .hasRole(SUPER_ADMIN.name());
-//                .authenticated();
+                .antMatchers("/api/v1/register").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
+                .anyRequest().authenticated();
     }
 
     @Override

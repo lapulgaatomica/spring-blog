@@ -7,6 +7,7 @@ import com.project.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -41,6 +42,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_USER') or hasAuthority('post:write')")
     public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id){
         postService.deleteBlogPost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
