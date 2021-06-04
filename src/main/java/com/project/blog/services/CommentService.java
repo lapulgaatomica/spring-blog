@@ -6,7 +6,7 @@ import com.project.blog.dtos.CommentDTO;
 import java.util.List;
 
 public interface CommentService {
-    Comment newComment(CommentDTO commentDTO);
+    Comment newComment(Long postId, CommentDTO commentDTO);
     Comment getComment(Long id);
     Comment updateComment(Long id, CommentDTO comment);
     void deleteComment(Long id);

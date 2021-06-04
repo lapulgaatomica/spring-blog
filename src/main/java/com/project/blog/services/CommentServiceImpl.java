@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +19,8 @@ public class CommentServiceImpl implements CommentService{
     private final PostRepository postRepository;
 
     @Override
-    public Comment newComment(CommentDTO commentDTO) {
-        Post post = postRepository.findById(commentDTO.getPostId()).get();
+    public Comment newComment(Long postId, CommentDTO commentDTO) {
+        Post post = postRepository.findById(postId).get();
         return commentRepository.save(new Comment(
                 null, commentDTO.getContent(), LocalDateTime.now(), null, post));
     }

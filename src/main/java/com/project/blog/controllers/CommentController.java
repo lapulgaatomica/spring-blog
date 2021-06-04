@@ -12,13 +12,14 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/comments")
+@RequestMapping("/api/v1/posts/{postId}/comments")
 public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    public ResponseEntity<Comment> newComment(@RequestBody CommentDTO comment){
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.newComment(comment));
+    public ResponseEntity<Comment> newComment(@PathVariable("postId") Long postId,
+                                              @RequestBody CommentDTO comment){
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.newComment(postId, comment));
     }
 
     @GetMapping("/{id}")
