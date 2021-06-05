@@ -32,7 +32,8 @@ public class Post {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "post")
     private Set<Comment> comments;
 
-    public Post(Long id, String title, String content, LocalDateTime dateCreated, LocalDateTime dateEdited, BlogUser creator) {
+    public Post(Long id, String title, String content, LocalDateTime dateCreated, LocalDateTime dateEdited,
+                BlogUser creator) {
         this.id = id;
         this.title = title;
         this.content = content;

@@ -49,7 +49,6 @@ public class PostServiceImpl implements PostService {
                 post.getDateEdited(), comments);
     }
 
-
     @Transactional
     @Override
     public Post updateBlogPost(Long id, PostDTO post) {
@@ -65,5 +64,4 @@ public class PostServiceImpl implements PostService {
     public void deleteBlogPost(Long id) {
         postRepository.deleteById(id);
     }
-
 }

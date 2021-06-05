@@ -1,6 +1,5 @@
 package com.project.blog.configuration;
 
-
 import com.project.blog.security.JwtConfigProperties;
 import com.project.blog.security.JwtTokenVerifier;
 import com.project.blog.security.JwtUsernameAndPasswordAuthenticationFilter;
