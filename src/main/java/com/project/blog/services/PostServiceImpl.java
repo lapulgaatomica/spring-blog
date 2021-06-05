@@ -1,12 +1,15 @@
 package com.project.blog.services;
 
+import com.project.blog.entities.BlogUser;
 import com.project.blog.entities.Comment;
 import com.project.blog.entities.Post;
 import com.project.blog.dtos.PostDTO;
 import com.project.blog.dtos.PostWithCommentsDTO;
+import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,7 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final BlogUserRepository userRepository;
 
     @Override
     public List<Post> getBlogPosts() {
@@ -26,9 +30,12 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post newBlogPost(PostDTO postDTO) {
+        BlogUser currentLoggedInUser = userRepository.findByUsername(
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
+        ).get();
         return postRepository.save(new Post(
                 null, postDTO.getTitle(), postDTO.getContent(),
-                LocalDateTime.now(), null));
+                LocalDateTime.now(), null, currentLoggedInUser));
     }
 
     @Override

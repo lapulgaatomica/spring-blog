@@ -25,14 +25,19 @@ public class Post {
     private LocalDateTime dateEdited;
 
     @JsonIgnore
+    @ManyToOne
+    private BlogUser creator;
+
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "post")
     private Set<Comment> comments;
 
-    public Post(Long id, String title, String content, LocalDateTime dateCreated, LocalDateTime dateEdited) {
+    public Post(Long id, String title, String content, LocalDateTime dateCreated, LocalDateTime dateEdited, BlogUser creator) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.dateCreated = dateCreated;
         this.dateEdited = dateEdited;
+        this.creator = creator;
     }
 }

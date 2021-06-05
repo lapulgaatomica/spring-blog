@@ -27,9 +27,14 @@ public class Comment {
     @JoinColumn(name = "POST_ID")
     private Post post;
 
-    public Comment(Long id, String content, Post post) {
+    @JsonIgnore
+    @ManyToOne
+    public BlogUser creator;
+
+    public Comment(Long id, String content, Post post, BlogUser creator) {
         this.id = id;
         this.content = content;
         this.post = post;
+        this.creator = creator;
     }
 }
