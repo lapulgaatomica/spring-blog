@@ -1,6 +1,6 @@
 package com.project.blog.configuration;
 
-import com.project.blog.jwt.JwtConfigProperties;
+import com.project.blog.security.JwtConfigProperties;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

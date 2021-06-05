@@ -1,4 +1,4 @@
-package com.project.blog.jwt;
+package com.project.blog.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.blog.dtos.LoginRequest;

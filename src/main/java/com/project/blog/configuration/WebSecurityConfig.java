@@ -1,9 +1,9 @@
 package com.project.blog.configuration;
 
 
-import com.project.blog.jwt.JwtConfigProperties;
-import com.project.blog.jwt.JwtTokenVerifier;
-import com.project.blog.jwt.JwtUsernameAndPasswordAuthenticationFilter;
+import com.project.blog.security.JwtConfigProperties;
+import com.project.blog.security.JwtTokenVerifier;
+import com.project.blog.security.JwtUsernameAndPasswordAuthenticationFilter;
 import com.project.blog.services.UserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

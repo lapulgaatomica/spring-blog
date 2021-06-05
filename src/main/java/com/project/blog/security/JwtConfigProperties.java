@@ -1,4 +1,4 @@
-package com.project.blog.jwt;
+package com.project.blog.security;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
