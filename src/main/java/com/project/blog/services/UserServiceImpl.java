@@ -1,5 +1,6 @@
 package com.project.blog.services;
 
+import com.project.blog.dtos.ChangeRoleRequest;
 import com.project.blog.entities.BlogUser;
 import com.project.blog.dtos.RegistrationRequest;
 import com.project.blog.entities.Role;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.project.blog.entities.enums.RoleName.*;
 
@@ -61,6 +63,22 @@ public class UserServiceImpl implements UserService {
         if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(
                 new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
             return roleRepository.findAll();
+        }
+        throw new IllegalStateException("You're not an admin");
+    }
+
+    @Override
+    public String changeRole(String username, ChangeRoleRequest changeRoleRequest) {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(
+                new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
+            Optional<BlogUser> blogUser = blogUserRepository.findByUsername(username);
+            if(blogUser.isPresent()){
+                BlogUser user =  blogUser.get();
+                user.setRole(roleRepository.findByName(changeRoleRequest.getRoleName()).get());
+                blogUserRepository.save(user);
+                return username + "'s role was successfully changed to " + changeRoleRequest.getRoleName();
+            }
+            throw new IllegalStateException("User " + username + " not found");
         }
         throw new IllegalStateException("You're not an admin");
     }

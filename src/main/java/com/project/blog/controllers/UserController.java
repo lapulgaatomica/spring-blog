@@ -1,5 +1,6 @@
 package com.project.blog.controllers;
 
+import com.project.blog.dtos.ChangeRoleRequest;
 import com.project.blog.dtos.RegistrationRequest;
 import com.project.blog.entities.Role;
 import com.project.blog.services.UserService;
@@ -30,8 +31,10 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRoles());
     }
 
-//    @PatchMapping("/{username}/give-role")
-//    public ResponseEntity<String> giveRole(){
-//        return ResponseEntity.status(HttpStatus.ACCEPTED).body();
-//    }
+    @PatchMapping("/{username}/change-role")
+    @PreAuthorize("hasAuthority('user:write')")
+    public ResponseEntity<String> giveRole(@PathVariable("username") String username,
+                                           @RequestBody ChangeRoleRequest changeRoleRequest){
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changeRole(username, changeRoleRequest));
+    }
 }
