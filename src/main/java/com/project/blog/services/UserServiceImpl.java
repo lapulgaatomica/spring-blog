@@ -7,14 +7,18 @@ import com.project.blog.entities.enums.RoleName;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.project.blog.entities.enums.RoleName.*;
 
 @AllArgsConstructor
 @Service
-public class AuthServiceImpl implements AuthService {
+public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final BlogUserRepository blogUserRepository;
     private final RoleRepository roleRepository;
@@ -50,5 +54,14 @@ public class AuthServiceImpl implements AuthService {
         user.setRole(role);
         blogUserRepository.save(user);
         return user.getEmail();
+    }
+
+    @Override
+    public List<Role> getRoles() {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(
+                new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
+            return roleRepository.findAll();
+        }
+        throw new IllegalStateException("You're not an admin");
     }
 }

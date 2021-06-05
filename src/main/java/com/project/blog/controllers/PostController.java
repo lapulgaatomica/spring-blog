@@ -42,7 +42,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_USER') or hasAuthority('post:write')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasAuthority('post:write')")
     public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id){
         postService.deleteBlogPost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

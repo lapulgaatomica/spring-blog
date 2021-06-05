@@ -32,7 +32,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_USER') or hasAuthority('comment:write')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasAuthority('comment:write')")
     public ResponseEntity<?> deleteComment(@PathVariable("id") Long id){
         commentService.deleteComment(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
