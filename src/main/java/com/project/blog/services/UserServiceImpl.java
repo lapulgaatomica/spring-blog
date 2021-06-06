@@ -8,6 +8,7 @@ import com.project.blog.entities.enums.RoleName;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -69,8 +70,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String changeRole(String username, ChangeRoleRequest changeRoleRequest) {
-        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(
-                new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
+        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
             Optional<BlogUser> blogUser = blogUserRepository.findByUsername(username);
             if(blogUser.isPresent()){
                 BlogUser user =  blogUser.get();

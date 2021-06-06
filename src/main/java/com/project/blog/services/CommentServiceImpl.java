@@ -8,11 +8,15 @@ import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+
+import static com.project.blog.entities.enums.RoleName.COMMENT_MODERATOR;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +55,15 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
+        Comment comment = commentRepository.findById(id).get();
+        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        if(currentlyLoggedInUser.getAuthorities().contains(
+                new SimpleGrantedAuthority("comment:write")) ||
+                currentlyLoggedInUser.getName().equals(comment.getCreator().getUsername())){
+            commentRepository.delete(comment);
+
+        }else{
+            throw new IllegalStateException("Sorry you can't delete this comment");
+        }
     }
 }
