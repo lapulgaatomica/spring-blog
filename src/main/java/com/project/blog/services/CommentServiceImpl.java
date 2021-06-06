@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static com.project.blog.entities.enums.RoleName.COMMENT_MODERATOR;
-
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService{
@@ -28,19 +26,19 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public Comment newComment(Long postId, CommentDTO commentDTO) {
-        Post post = postRepository.findById(postId).get();
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalStateException(
+                "post with ID " + postId + " does not exist"));
         BlogUser currentLoggedInUser = userRepository.findByUsername(
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
-        ).get();
+        ).orElseThrow(() -> new IllegalStateException("Post with ID " + postId + " does not exist"));
         return commentRepository.save(new Comment(
                 null, commentDTO.getContent(), LocalDateTime.now(), null, post, currentLoggedInUser));
     }
 
     @Override
     public Comment getComment(Long id) {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
-                "Comment with ID " + id + " does not exist"));
-        return comment;
+        return commentRepository.findById(id).orElseThrow(
+                () -> new IllegalStateException("Comment with ID " + id + " does not exist"));
     }
 
     @Transactional
@@ -48,14 +46,19 @@ public class CommentServiceImpl implements CommentService{
     public Comment updateComment(Long id, CommentDTO commentDTO) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
                 "Comment with ID " + id + " does not exist"));
-        comment.setContent(commentDTO.getContent());
-        comment.setDateEdited(LocalDateTime.now());
-        return comment;
+        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        if(currentlyLoggedInUser.getName().equals(comment.getCreator().getUsername())){
+            comment.setContent(commentDTO.getContent());
+            comment.setDateEdited(LocalDateTime.now());
+            return comment;
+        }
+        throw new IllegalStateException("Sorry you can't edit this comment");
     }
 
     @Override
     public void deleteComment(Long id) {
-        Comment comment = commentRepository.findById(id).get();
+        Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
+                "Comment with ID " + id + " does not exist"));
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
         if(currentlyLoggedInUser.getAuthorities().contains(
                 new SimpleGrantedAuthority("comment:write")) ||
