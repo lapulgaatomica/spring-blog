@@ -30,7 +30,7 @@ public class CommentServiceImpl implements CommentService{
                 "post with ID " + postId + " does not exist"));
         BlogUser currentLoggedInUser = userRepository.findByUsername(
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
-        ).orElseThrow(() -> new IllegalStateException("Post with ID " + postId + " does not exist"));
+        ).orElseThrow(() -> new IllegalStateException("User does not exist"));
         return commentRepository.save(new Comment(
                 null, commentDTO.getContent(), LocalDateTime.now(), null, post, currentLoggedInUser));
     }
@@ -60,11 +60,10 @@ public class CommentServiceImpl implements CommentService{
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
                 "Comment with ID " + id + " does not exist"));
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
-        if(currentlyLoggedInUser.getAuthorities().contains(
-                new SimpleGrantedAuthority("comment:write")) ||
+
+        if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("comment:write")) ||
                 currentlyLoggedInUser.getName().equals(comment.getCreator().getUsername())){
             commentRepository.delete(comment);
-
         }else{
             throw new IllegalStateException("Sorry you can't delete this comment");
         }

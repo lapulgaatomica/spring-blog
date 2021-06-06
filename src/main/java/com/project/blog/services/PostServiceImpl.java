@@ -9,6 +9,8 @@ import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +34,7 @@ public class PostServiceImpl implements PostService {
     public Post newBlogPost(PostDTO postDTO) {
         BlogUser currentLoggedInUser = userRepository.findByUsername(
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
-        ).get();
+        ).orElseThrow(() -> new IllegalStateException("User does not exist"));
         return postRepository.save(new Post(
                 null, postDTO.getTitle(), postDTO.getContent(),
                 LocalDateTime.now(), null, currentLoggedInUser));
@@ -40,8 +42,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostWithCommentsDTO getBlogPostWithComment(Long id){
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
         List<Comment> comments = commentRepository.findByPostId(id);
 
         return new PostWithCommentsDTO(
@@ -51,17 +53,32 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Post updateBlogPost(Long id, PostDTO post) {
-        Post updatedPost = postRepository.findById(id)
+    public Post updateBlogPost(Long id, PostDTO postDTO) {
+        Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
-        updatedPost.setContent(post.getContent());
-        updatedPost.setTitle(post.getTitle());
-        updatedPost.setDateEdited(LocalDateTime.now());
-        return updatedPost;
+        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+
+        if(currentlyLoggedInUser.getName().equals(post.getCreator().getUsername())){
+            post.setContent(postDTO.getContent());
+            post.setTitle(postDTO.getTitle());
+            post.setDateEdited(LocalDateTime.now());
+            return post;
+        }
+
+        throw new IllegalStateException("Sorry you can't edit this post");
     }
 
     @Override
     public void deleteBlogPost(Long id) {
-        postRepository.deleteById(id);
+        Post post = postRepository.findById(id).
+                orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
+        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+
+        if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("post:write")) ||
+                currentlyLoggedInUser.getName().equals(post.getCreator().getUsername())){
+            postRepository.delete(post);
+        }else{
+            throw new IllegalStateException("Sorry you can't delete this post");
+        }
     }
 }
