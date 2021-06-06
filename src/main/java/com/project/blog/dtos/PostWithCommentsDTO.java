@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class PostWithCommentsDTO {
     private Long id;
-
     private String title;
     private String content;
     private LocalDateTime dateCreated;

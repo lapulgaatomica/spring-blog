@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.project.blog.entities.enums.RoleName.*;
 
@@ -50,9 +49,11 @@ public class UserServiceImpl implements UserService {
                     roleRepository.save(new Role(roleName));
                 }
             }
-            role = roleRepository.findByName(SUPER_ADMIN).get();
+            role = roleRepository.findByName(SUPER_ADMIN).orElseThrow(
+                    () -> new IllegalStateException("role with name " + SUPER_ADMIN.name() + " does not exist"));
         }else{
-            role = roleRepository.findByName(USER).get();
+            role = roleRepository.findByName(USER).orElseThrow(
+                    () -> new IllegalStateException("role with name " + USER.name() + " does not exist"));
         }
         user.setRole(role);
         blogUserRepository.save(user);
@@ -71,16 +72,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public String changeRole(String username, ChangeRoleRequest changeRoleRequest) {
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+
         if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
-            Optional<BlogUser> blogUser = blogUserRepository.findByUsername(username);
-            if(blogUser.isPresent()){
-                BlogUser user =  blogUser.get();
-                user.setRole(roleRepository.findByName(changeRoleRequest.getRoleName()).get());
-                blogUserRepository.save(user);
-                return username + "'s role was successfully changed to " + changeRoleRequest.getRoleName();
-            }
-            throw new IllegalStateException("User " + username + " not found");
+            BlogUser user = blogUserRepository.findByUsername(username).orElseThrow(
+                    () -> new IllegalStateException("User " + username + " not found"));
+            user.setRole(roleRepository.findByName(changeRoleRequest.getRoleName()).orElseThrow(
+                            () -> new IllegalStateException("role with name " + changeRoleRequest.getRoleName() + " does not exist")));
+            blogUserRepository.save(user);
+            return username + "'s role was successfully changed to " + changeRoleRequest.getRoleName();
         }
+
         throw new IllegalStateException("You're not an admin");
     }
 }
