@@ -1,5 +1,6 @@
 package com.project.blog.exceptions;
 
+import com.project.blog.payloads.GenericResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,7 +14,8 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({IllegalStateException.class})
     @ResponseBody
-    public ResponseEntity<String> illegalStateException(IllegalStateException e){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public ResponseEntity<Object> illegalStateException(IllegalStateException e){
+        GenericResponse response = new GenericResponse(false, e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }
