@@ -1,8 +1,8 @@
 package com.project.blog.controllers;
 
 import com.project.blog.entities.Post;
-import com.project.blog.dtos.PostDTO;
-import com.project.blog.dtos.PostWithCommentsDTO;
+import com.project.blog.payloads.PostDTO;
+import com.project.blog.payloads.PostWithCommentsDTO;
 import com.project.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

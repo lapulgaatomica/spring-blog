@@ -1,7 +1,7 @@
 package com.project.blog.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.blog.dtos.LoginRequest;
+import com.project.blog.payloads.LoginRequest;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

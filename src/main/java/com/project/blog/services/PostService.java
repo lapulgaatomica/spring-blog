@@ -1,8 +1,8 @@
 package com.project.blog.services;
 
 import com.project.blog.entities.Post;
-import com.project.blog.dtos.PostDTO;
-import com.project.blog.dtos.PostWithCommentsDTO;
+import com.project.blog.payloads.PostDTO;
+import com.project.blog.payloads.PostWithCommentsDTO;
 
 import java.util.List;
 

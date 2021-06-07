@@ -1,4 +1,4 @@
-package com.project.blog.dtos;
+package com.project.blog.payloads;
 
 import com.project.blog.entities.enums.RoleName;
 import lombok.Data;

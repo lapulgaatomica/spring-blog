@@ -1,7 +1,7 @@
 package com.project.blog.services;
 
 import com.project.blog.entities.Comment;
-import com.project.blog.dtos.CommentDTO;
+import com.project.blog.payloads.CommentDTO;
 
 public interface CommentService {
     Comment newComment(Long postId, CommentDTO commentDTO);

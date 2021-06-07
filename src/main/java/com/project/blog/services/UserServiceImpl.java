@@ -1,8 +1,8 @@
 package com.project.blog.services;
 
-import com.project.blog.dtos.ChangeRoleRequest;
+import com.project.blog.payloads.ChangeRoleRequest;
 import com.project.blog.entities.BlogUser;
-import com.project.blog.dtos.RegistrationRequest;
+import com.project.blog.payloads.RegistrationRequest;
 import com.project.blog.entities.Role;
 import com.project.blog.entities.enums.RoleName;
 import com.project.blog.repositories.BlogUserRepository;
