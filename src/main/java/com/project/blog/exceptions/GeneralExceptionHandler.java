@@ -30,12 +30,4 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
                 e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
-
-    @ExceptionHandler({InvalidTokenException.class})
-    @ResponseBody
-    public ResponseEntity<Object> invalidTokenException(InvalidTokenException e){
-        ExceptionResponse response = new ExceptionResponse(
-                e.getMessage(), HttpStatus.BAD_GATEWAY, LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
-    }
 }

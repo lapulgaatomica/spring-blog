@@ -1,5 +1,6 @@
 package com.project.blog.security;
 
+import com.project.blog.exceptions.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -66,7 +67,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
         }catch (JwtException e){
-            throw new IllegalStateException(String.format("Token %s cannot be trusted", token));
+            throw new InvalidTokenException("Token " + token + " cannot be trusted");
         }
 
         filterChain.doFilter(request, response);
