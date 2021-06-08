@@ -3,6 +3,8 @@ package com.project.blog.services;
 import com.project.blog.entities.BlogUser;
 import com.project.blog.entities.Comment;
 import com.project.blog.entities.Post;
+import com.project.blog.exceptions.EntryNotFoundException;
+import com.project.blog.exceptions.InsufficientPermissionException;
 import com.project.blog.payloads.PostDTO;
 import com.project.blog.payloads.PostWithCommentsDTO;
 import com.project.blog.repositories.BlogUserRepository;
@@ -34,7 +36,7 @@ public class PostServiceImpl implements PostService {
     public Post newBlogPost(PostDTO postDTO) {
         BlogUser currentLoggedInUser = userRepository.findByUsername(
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
-        ).orElseThrow(() -> new IllegalStateException("User does not exist"));
+        ).orElseThrow(() -> new EntryNotFoundException("User does not exist"));
         return postRepository.save(new Post(
                 null, postDTO.getTitle(), postDTO.getContent(),
                 LocalDateTime.now(), null, currentLoggedInUser));
@@ -43,7 +45,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostWithCommentsDTO getBlogPostWithComment(Long id){
         Post post = postRepository.findById(id).orElseThrow(
-                () -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
+                () -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
         List<Comment> comments = commentRepository.findByPostId(id);
 
         return new PostWithCommentsDTO(
@@ -55,7 +57,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post updateBlogPost(Long id, PostDTO postDTO) {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
+                .orElseThrow(() -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
 
         if(currentlyLoggedInUser.getName().equals(post.getCreator().getUsername())){
@@ -65,20 +67,20 @@ public class PostServiceImpl implements PostService {
             return post;
         }
 
-        throw new IllegalStateException("Sorry you can't edit this post");
+        throw new InsufficientPermissionException("Sorry you can't edit this post");
     }
 
     @Override
     public void deleteBlogPost(Long id) {
         Post post = postRepository.findById(id).
-                orElseThrow(() -> new IllegalStateException("Blog post with ID " + id + " does not exist"));
+                orElseThrow(() -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
 
         if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("post:write")) ||
                 currentlyLoggedInUser.getName().equals(post.getCreator().getUsername())){
             postRepository.delete(post);
         }else{
-            throw new IllegalStateException("Sorry you can't delete this post");
+            throw new InsufficientPermissionException("Sorry you can't delete this post");
         }
     }
 }

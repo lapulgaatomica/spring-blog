@@ -1,5 +1,6 @@
 package com.project.blog.exceptions;
 
+import com.project.blog.payloads.ExceptionResponse;
 import com.project.blog.payloads.GenericResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,14 +9,33 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.LocalDateTime;
+
 
 @ControllerAdvice
 public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({IllegalStateException.class})
+    @ExceptionHandler({EntryNotFoundException.class})
     @ResponseBody
-    public ResponseEntity<Object> illegalStateException(IllegalStateException e){
-        GenericResponse response = new GenericResponse(false, e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    public ResponseEntity<Object> entryNotFoundException(EntryNotFoundException e){
+        ExceptionResponse response = new ExceptionResponse(
+                e.getMessage(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler({InsufficientPermissionException.class})
+    @ResponseBody
+    public ResponseEntity<Object> insufficientPermissionException(InsufficientPermissionException e){
+        ExceptionResponse response = new ExceptionResponse(
+                e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler({InvalidTokenException.class})
+    @ResponseBody
+    public ResponseEntity<Object> invalidTokenException(InvalidTokenException e){
+        ExceptionResponse response = new ExceptionResponse(
+                e.getMessage(), HttpStatus.BAD_GATEWAY, LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
     }
 }
