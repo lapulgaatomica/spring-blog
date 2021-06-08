@@ -7,7 +7,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ChangeRoleRequest {
-
-    private RoleName roleName;
-
+    private RoleName role;
 }

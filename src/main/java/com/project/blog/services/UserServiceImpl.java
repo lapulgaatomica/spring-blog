@@ -76,10 +76,10 @@ public class UserServiceImpl implements UserService {
         if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
             BlogUser user = blogUserRepository.findByUsername(username).orElseThrow(
                     () -> new IllegalStateException("User " + username + " not found"));
-            user.setRole(roleRepository.findByName(changeRoleRequest.getRoleName()).orElseThrow(
-                            () -> new IllegalStateException("role with name " + changeRoleRequest.getRoleName() + " does not exist")));
+            user.setRole(roleRepository.findByName(changeRoleRequest.getRole()).orElseThrow(
+                            () -> new IllegalStateException("role with name " + changeRoleRequest.getRole() + " does not exist")));
             blogUserRepository.save(user);
-            return username + "'s role was successfully changed to " + changeRoleRequest.getRoleName();
+            return username + "'s role was successfully changed to " + changeRoleRequest.getRole();
         }
 
         throw new IllegalStateException("You're not an admin");

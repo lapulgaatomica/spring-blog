@@ -16,8 +16,8 @@ public class PostWithCommentsDTO {
     private Long id;
     private String title;
     private String content;
-    private LocalDateTime dateCreated;
-    private LocalDateTime dateEdited;
+    private LocalDateTime created;
+    private LocalDateTime edited;
     private List<Comment> comments;
 
 
