@@ -1,7 +1,7 @@
 package com.project.blog.controllers;
 
 import com.project.blog.entities.Post;
-import com.project.blog.payloads.PostDTO;
+import com.project.blog.payloads.PostRequest;
 import com.project.blog.payloads.PostWithCommentsDTO;
 import com.project.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +31,12 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> newBlogPost(@RequestBody @Valid PostDTO post){
+    public ResponseEntity<Post> newBlogPost(@RequestBody @Valid PostRequest post){
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.newBlogPost(post));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Post> updateBlogPost(@PathVariable("id") Long id, @RequestBody PostDTO post){
+    public ResponseEntity<Post> updateBlogPost(@PathVariable("id") Long id, @RequestBody PostRequest post){
         Post updatedPost = postService.updateBlogPost(id, post);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }

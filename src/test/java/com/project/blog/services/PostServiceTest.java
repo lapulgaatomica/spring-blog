@@ -1,7 +1,7 @@
 //package com.project.blog.services;
 //
 //import com.project.blog.entities.Post;
-//import com.project.blog.dtos.PostDTO;
+//import com.project.blog.dtos.PostRequest;
 //import com.project.blog.repositories.CommentRepository;
 //import com.project.blog.repositories.PostRepository;
 //import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +46,7 @@
 //    @Test
 //    public void getBlogPostWithComment(){
 //        long id =  1;
-//        PostDTO postDTO = new PostDTO("title", "blog post");
+//        PostRequest postDTO = new PostRequest("title", "blog post");
 //        Post post = new Post(null, postDTO.getTitle(), postDTO.getContent(), LocalDateTime.now(), null);
 //        // Given
 //        given(postRepository.findById(id)).willReturn(Optional.of(post));
@@ -62,7 +62,7 @@
 //    @Test
 //    public void newBlogPost(){
 //        // Given
-//        PostDTO postDTO = new PostDTO("title","blog post");
+//        PostRequest postDTO = new PostRequest("title","blog post");
 //        Post post = new Post(null, postDTO.getTitle(), postDTO.getContent(), LocalDateTime.now(), null);
 //
 //        // When
@@ -75,7 +75,7 @@
 //    @Test
 //    public void updateBlogPost(){
 //        long id =  1;
-//        PostDTO postDTO = new PostDTO("title", "blog post");
+//        PostRequest postDTO = new PostRequest("title", "blog post");
 //        Post post = new Post(null, postDTO.getTitle(), postDTO.getContent(), LocalDateTime.now(), null);
 //        // Given
 //        given(postRepository.findById(id)).willReturn(Optional.of(post));

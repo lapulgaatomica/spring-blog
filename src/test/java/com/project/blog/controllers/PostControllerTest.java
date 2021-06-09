@@ -2,7 +2,7 @@
 //
 //import com.project.blog.dtos.PostWithCommentsDTO;
 //import com.project.blog.entities.Post;
-//import com.project.blog.dtos.PostDTO;
+//import com.project.blog.dtos.PostRequest;
 //import com.project.blog.services.PostService;
 //import org.junit.jupiter.api.Test;
 //import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,7 +46,7 @@
 //    private JacksonTester<Post> jsonPostResponse;
 //
 //    @Autowired
-//    private JacksonTester<PostDTO> jsonPostRequest;
+//    private JacksonTester<PostRequest> jsonPostRequest;
 //
 //    @Autowired
 //    private JacksonTester<PostWithCommentsDTO> jsonPostWithCommentResponse;
@@ -90,7 +90,7 @@
 //
 //    @Test
 //    public void newBlogPost() throws Exception{
-//        PostDTO post = new PostDTO("title", "test post");
+//        PostRequest post = new PostRequest("title", "test post");
 //        Post postWithDateAdded  = new Post(1L,"title", "test post", LocalDateTime.now(), null);
 //
 //        given(postService
@@ -111,7 +111,7 @@
 //
 //    @Test
 //    public  void updateBlogPost() throws Exception{
-//        PostDTO post = new PostDTO("title updated", "test post updated");
+//        PostRequest post = new PostRequest("title updated", "test post updated");
 //        Post expected = new Post(1L,"title updated", "test post updated", LocalDateTime.now(), LocalDateTime.now());
 //        given(postService
 //                .updateBlogPost(1L, post))

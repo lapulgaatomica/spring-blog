@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 //@Data
 //@NoArgsConstructor
 @Value
-public class PostDTO {
+public class PostRequest {
     @NotBlank
     private String title, content ;
 }

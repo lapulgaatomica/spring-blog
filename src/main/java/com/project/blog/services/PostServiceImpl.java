@@ -5,7 +5,7 @@ import com.project.blog.entities.Comment;
 import com.project.blog.entities.Post;
 import com.project.blog.exceptions.EntryNotFoundException;
 import com.project.blog.exceptions.InsufficientPermissionException;
-import com.project.blog.payloads.PostDTO;
+import com.project.blog.payloads.PostRequest;
 import com.project.blog.payloads.PostWithCommentsDTO;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
@@ -33,12 +33,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post newBlogPost(PostDTO postDTO) {
+    public Post newBlogPost(PostRequest postRequest) {
         BlogUser currentLoggedInUser = userRepository.findByUsername(
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
         ).orElseThrow(() -> new EntryNotFoundException("User does not exist"));
         return postRepository.save(new Post(
-                null, postDTO.getTitle(), postDTO.getContent(),
+                null, postRequest.getTitle(), postRequest.getContent(),
                 LocalDateTime.now(), null, currentLoggedInUser));
     }
 
@@ -55,14 +55,14 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Post updateBlogPost(Long id, PostDTO postDTO) {
+    public Post updateBlogPost(Long id, PostRequest postRequest) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
 
         if(currentlyLoggedInUser.getName().equals(post.getCreator().getUsername())){
-            post.setContent(postDTO.getContent());
-            post.setTitle(postDTO.getTitle());
+            post.setContent(postRequest.getContent());
+            post.setTitle(postRequest.getTitle());
             post.setDateEdited(LocalDateTime.now());
             return post;
         }
