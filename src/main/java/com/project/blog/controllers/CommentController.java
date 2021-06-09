@@ -1,6 +1,6 @@
 package com.project.blog.controllers;
 
-import com.project.blog.payloads.CommentDTO;
+import com.project.blog.payloads.CommentRequest;
 import com.project.blog.services.CommentService;
 import com.project.blog.entities.Comment;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<Comment> newComment(@PathVariable("postId") Long postId,
-                                              @RequestBody CommentDTO comment){
+                                              @RequestBody CommentRequest comment){
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.newComment(postId, comment));
     }
 
@@ -27,8 +27,8 @@ public class CommentController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Comment> updateComment(@PathVariable("id") Long id, @RequestBody CommentDTO commentDTO){
-        return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(id, commentDTO));
+    public ResponseEntity<Comment> updateComment(@PathVariable("id") Long id, @RequestBody CommentRequest commentRequest){
+        return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(id, commentRequest));
     }
 
     @DeleteMapping("/{id}")

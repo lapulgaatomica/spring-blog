@@ -2,7 +2,7 @@
 //
 //import com.project.blog.entities.Comment;
 //import com.project.blog.entities.Post;
-//import com.project.blog.dtos.CommentDTO;
+//import com.project.blog.dtos.CommentRequest;
 //import com.project.blog.repositories.CommentRepository;
 //import com.project.blog.repositories.PostRepository;
 //import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +39,7 @@
 //    public void addNewComment(){
 //        // Given
 //        Post post = new Post(1L, "post title", "post", LocalDateTime.now(), null);
-//        CommentDTO commentDTO = new CommentDTO("content", 1L);
+//        CommentRequest commentDTO = new CommentRequest("content", 1L);
 //
 //        Comment comment = new Comment(1L, "content", LocalDateTime.now(), null, post);
 //        given(postRepository.findById(1L)).willReturn(Optional.of(post));
@@ -73,7 +73,7 @@
 //    public void canUpdateComment(){
 //        // Given
 //        Post post = new Post(1L, "post title", "post", LocalDateTime.now(), null);
-//        CommentDTO commentDTO = new CommentDTO("content", 1L);
+//        CommentRequest commentDTO = new CommentRequest("content", 1L);
 //
 //        Comment comment = new Comment(1L, "content", LocalDateTime.now(), null, post);
 //        given(commentRepository.findById(1L)).willReturn(Optional.of(comment));

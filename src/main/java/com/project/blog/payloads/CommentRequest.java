@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 //@Value
 @Data
 @NoArgsConstructor
-public class CommentDTO {
+public class CommentRequest {
     @NotBlank
     private String content;
 }

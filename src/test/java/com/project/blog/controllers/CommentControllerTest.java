@@ -2,7 +2,7 @@
 //
 //import com.project.blog.entities.Comment;
 //import com.project.blog.entities.Post;
-//import com.project.blog.dtos.CommentDTO;
+//import com.project.blog.dtos.CommentRequest;
 //import com.project.blog.services.CommentService;
 //import com.project.blog.services.PostService;
 //import org.junit.jupiter.api.Test;
@@ -50,12 +50,12 @@
 //    private JacksonTester<Comment> jsonCommentResponse;
 //
 //    @Autowired
-//    private JacksonTester<CommentDTO> jsonCommentRequest;
+//    private JacksonTester<CommentRequest> jsonCommentRequest;
 //
 //    @Test
 //    public void newComment() throws Exception{
 //        // Given
-//        CommentDTO comment = new CommentDTO("Comment", 1L);
+//        CommentRequest comment = new CommentRequest("Comment", 1L);
 //        Post post = new Post(1L, "Post Title", "Post Content", LocalDateTime.now(), null);
 //        Comment commentResponse = new Comment(
 //                1L, "Comment Content", LocalDateTime.now(), null, post);
@@ -126,7 +126,7 @@
 //    @Test
 //    public void updateComment() throws Exception{
 //        // Given
-//        CommentDTO comment = new CommentDTO("Comment", 1L);
+//        CommentRequest comment = new CommentRequest("Comment", 1L);
 //        Post post = new Post(1L, "Post Title", "Post Content", LocalDateTime.now(), null);
 //        Comment commentResponse = new Comment(
 //                1L, "Comment Content", LocalDateTime.now(), LocalDateTime.now(), post);

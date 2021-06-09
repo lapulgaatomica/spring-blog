@@ -5,7 +5,7 @@ import com.project.blog.entities.Comment;
 import com.project.blog.entities.Post;
 import com.project.blog.exceptions.EntryNotFoundException;
 import com.project.blog.exceptions.InsufficientPermissionException;
-import com.project.blog.payloads.CommentDTO;
+import com.project.blog.payloads.CommentRequest;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
@@ -27,14 +27,14 @@ public class CommentServiceImpl implements CommentService{
     private final BlogUserRepository userRepository;
 
     @Override
-    public Comment newComment(Long postId, CommentDTO commentDTO) {
+    public Comment newComment(Long postId, CommentRequest commentRequest) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntryNotFoundException(
                 "post with ID " + postId + " does not exist"));
         BlogUser currentLoggedInUser = userRepository.findByUsername(
                 SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
         ).orElseThrow(() -> new EntryNotFoundException("User does not exist"));
         return commentRepository.save(new Comment(
-                null, commentDTO.getContent(), LocalDateTime.now(), null, post, currentLoggedInUser));
+                null, commentRequest.getContent(), LocalDateTime.now(), null, post, currentLoggedInUser));
     }
 
     @Override
@@ -45,12 +45,12 @@ public class CommentServiceImpl implements CommentService{
 
     @Transactional
     @Override
-    public Comment updateComment(Long id, CommentDTO commentDTO) {
+    public Comment updateComment(Long id, CommentRequest commentRequest) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new EntryNotFoundException(
                 "Comment with ID " + id + " does not exist"));
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
         if(currentlyLoggedInUser.getName().equals(comment.getCreator().getUsername())){
-            comment.setContent(commentDTO.getContent());
+            comment.setContent(commentRequest.getContent());
             comment.setDateEdited(LocalDateTime.now());
             return comment;
         }
