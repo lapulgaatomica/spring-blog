@@ -2,7 +2,7 @@ package com.project.blog.controllers;
 
 import com.project.blog.entities.Post;
 import com.project.blog.payloads.PostRequest;
-import com.project.blog.payloads.PostWithCommentsDTO;
+import com.project.blog.payloads.PostWithCommentsResponse;
 import com.project.blog.services.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PostWithCommentsDTO> getBlogPost(@PathVariable("id") Long id){
+    public ResponseEntity<PostWithCommentsResponse> getBlogPost(@PathVariable("id") Long id){
         return ResponseEntity.status(HttpStatus.OK).body(postService.getBlogPostWithComment(id));
     }
 

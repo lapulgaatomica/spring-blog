@@ -6,7 +6,7 @@ import com.project.blog.entities.Post;
 import com.project.blog.exceptions.EntryNotFoundException;
 import com.project.blog.exceptions.InsufficientPermissionException;
 import com.project.blog.payloads.PostRequest;
-import com.project.blog.payloads.PostWithCommentsDTO;
+import com.project.blog.payloads.PostWithCommentsResponse;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
@@ -43,12 +43,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostWithCommentsDTO getBlogPostWithComment(Long id){
+    public PostWithCommentsResponse getBlogPostWithComment(Long id){
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
         List<Comment> comments = commentRepository.findByPostId(id);
 
-        return new PostWithCommentsDTO(
+        return new PostWithCommentsResponse(
                 post.getId(), post.getTitle(), post.getContent(), post.getDateCreated(),
                 post.getDateEdited(), comments);
     }

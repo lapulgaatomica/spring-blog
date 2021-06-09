@@ -1,6 +1,6 @@
 //package com.project.blog.controllers;
 //
-//import com.project.blog.dtos.PostWithCommentsDTO;
+//import com.project.blog.dtos.PostWithCommentsResponse;
 //import com.project.blog.entities.Post;
 //import com.project.blog.dtos.PostRequest;
 //import com.project.blog.services.PostService;
@@ -49,7 +49,7 @@
 //    private JacksonTester<PostRequest> jsonPostRequest;
 //
 //    @Autowired
-//    private JacksonTester<PostWithCommentsDTO> jsonPostWithCommentResponse;
+//    private JacksonTester<PostWithCommentsResponse> jsonPostWithCommentResponse;
 //
 //
 //    @Test
@@ -73,7 +73,7 @@
 //
 //    @Test
 //    public void getBlogPost() throws Exception{
-//        PostWithCommentsDTO post = new PostWithCommentsDTO(1L,"title", "test post", LocalDateTime.now(), null, List.of());
+//        PostWithCommentsResponse post = new PostWithCommentsResponse(1L,"title", "test post", LocalDateTime.now(), null, List.of());
 //        given(postService
 //                .getBlogPostWithComment(1L))
 //                .willReturn(post);

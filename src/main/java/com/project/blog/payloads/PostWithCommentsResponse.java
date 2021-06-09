@@ -12,7 +12,7 @@ import java.util.List;
 @EqualsAndHashCode(exclude = {"comments"})
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostWithCommentsDTO {
+public class PostWithCommentsResponse {
     private Long id;
     private String title;
     private String content;
