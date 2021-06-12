@@ -30,11 +30,11 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
-    @ExceptionHandler({IllegalStateException.class})
+    @ExceptionHandler({PasswordMismatchException.class})
     @ResponseBody
-    public ResponseEntity<Object> illegalStateException(IllegalStateException e){
+    public ResponseEntity<Object> passwordMismatchException(PasswordMismatchException e){
         ExceptionResponse response = new ExceptionResponse(
-                e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+                e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 }

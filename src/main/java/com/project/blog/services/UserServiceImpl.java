@@ -2,6 +2,7 @@ package com.project.blog.services;
 
 import com.project.blog.exceptions.EntryNotFoundException;
 import com.project.blog.exceptions.InsufficientPermissionException;
+import com.project.blog.exceptions.PasswordMismatchException;
 import com.project.blog.payloads.ChangeRoleRequest;
 import com.project.blog.entities.BlogUser;
 import com.project.blog.payloads.GenericResponse;
@@ -103,12 +104,12 @@ public class UserServiceImpl implements UserService {
                     blogUserRepository.save(user);
                     return new GenericResponse(true, "password successfully changed");
                 }else{
-                    throw new IllegalStateException("Please enter your new password again twice and ensure they match");
+                    throw new PasswordMismatchException("Please enter your new password again twice and ensure they match");
                 }
             }else{
                 // Todo: I have to find a better way to go about incorrect password in case
                 // Todo: the account is being accessed by someone who isn't the account owner
-                throw new IllegalStateException("Please enter your old password");
+                throw new PasswordMismatchException("Please enter your old password");
             }
         }
 
