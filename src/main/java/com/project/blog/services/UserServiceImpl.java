@@ -103,8 +103,8 @@ public class UserServiceImpl implements UserService {
                     throw new IllegalStateException("Please enter your new password again and ensure they match");
                 }
             }else{
-                // Todo: I have to find a better way to go about incorrect password
-                // Todo: in case the account is being accessed by someone who isn't the account owner
+                // Todo: I have to find a better way to go about incorrect password in case
+                // Todo: the account is being accessed by someone who isn't the account owner
                 throw new IllegalStateException("Please enter your correct password");
             }
         }

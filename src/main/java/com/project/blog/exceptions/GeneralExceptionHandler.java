@@ -29,4 +29,12 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
                 e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
+
+    @ExceptionHandler({IllegalStateException.class})
+    @ResponseBody
+    public ResponseEntity<Object> illegalStateException(IllegalStateException e){
+        ExceptionResponse response = new ExceptionResponse(
+                e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
 }
