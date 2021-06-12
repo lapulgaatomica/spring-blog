@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
         BlogUser user = blogUserRepository.findById(id).orElseThrow(
                 () -> new EntryNotFoundException("User with id " + id + " does not exist"));
         if(currentlyLoggedInUser.getName().equals(user.getUsername())){
-            if(passwordEncoder.matches(user.getPassword(), request.getOldPassword())){
+            if(passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
                 if(request.getNewPassword1().equals(request.getNewPassword2())){
                     String newPassword = passwordEncoder.encode(request.getNewPassword1());
                     user.setPassword(newPassword);
