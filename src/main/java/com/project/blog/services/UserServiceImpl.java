@@ -100,12 +100,12 @@ public class UserServiceImpl implements UserService {
                     blogUserRepository.save(user);
                     return "Password successfully changed";
                 }else{
-                    throw new IllegalStateException("Please enter your new password again and ensure they match");
+                    throw new IllegalStateException("Please enter your new password again twice and ensure they match");
                 }
             }else{
                 // Todo: I have to find a better way to go about incorrect password in case
                 // Todo: the account is being accessed by someone who isn't the account owner
-                throw new IllegalStateException("Please enter your correct password");
+                throw new IllegalStateException("Please enter your old password");
             }
         }
         throw new IllegalStateException("You don't own this account");
