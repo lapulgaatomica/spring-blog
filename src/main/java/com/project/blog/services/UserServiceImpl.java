@@ -1,7 +1,9 @@
 package com.project.blog.services;
 
+import com.project.blog.exceptions.EntryNotFoundException;
 import com.project.blog.payloads.ChangeRoleRequest;
 import com.project.blog.entities.BlogUser;
+import com.project.blog.payloads.PasswordChangeRequest;
 import com.project.blog.payloads.RegistrationRequest;
 import com.project.blog.entities.Role;
 import com.project.blog.entities.enums.RoleName;
@@ -83,5 +85,29 @@ public class UserServiceImpl implements UserService {
         }
 
         throw new IllegalStateException("You're not an admin");
+    }
+
+    @Override
+    public String changePassword(Long id, PasswordChangeRequest request) {
+        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+        BlogUser user = blogUserRepository.findById(id).orElseThrow(
+                () -> new EntryNotFoundException("User with id " + id + " does not exist"));
+        if(currentlyLoggedInUser.getName().equals(user.getUsername())){
+            if(passwordEncoder.matches(user.getPassword(), request.getOldPassword())){
+                if(request.getNewPassword1().equals(request.getNewPassword2())){
+                    String newPassword = passwordEncoder.encode(request.getNewPassword1());
+                    user.setPassword(newPassword);
+                    blogUserRepository.save(user);
+                    return "Password successfully changed";
+                }else{
+                    throw new IllegalStateException("Please enter your new password again and ensure they match");
+                }
+            }else{
+                // Todo: I have to find a better way to go about incorrect password
+                // Todo: in case the account is being accessed by someone who isn't the account owner
+                throw new IllegalStateException("Please enter your correct password");
+            }
+        }
+        throw new IllegalStateException("You don't own this account");
     }
 }

@@ -1,6 +1,7 @@
 package com.project.blog.controllers;
 
 import com.project.blog.payloads.ChangeRoleRequest;
+import com.project.blog.payloads.PasswordChangeRequest;
 import com.project.blog.payloads.RegistrationRequest;
 import com.project.blog.entities.Role;
 import com.project.blog.services.UserService;
@@ -36,5 +37,10 @@ public class UserController {
     public ResponseEntity<String> giveRole(@PathVariable("username") String username,
                                            @RequestBody ChangeRoleRequest changeRoleRequest){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changeRole(username, changeRoleRequest));
+    }
+
+    @PatchMapping("/{id}/change-password")
+    public ResponseEntity<String> changePassword(@PathVariable("id") Long id, @RequestBody PasswordChangeRequest request){
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changePassword(id, request));
     }
 }
