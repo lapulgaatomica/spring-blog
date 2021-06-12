@@ -1,7 +1,6 @@
 package com.project.blog.exceptions;
 
 import com.project.blog.payloads.ExceptionResponse;
-import com.project.blog.payloads.GenericResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
