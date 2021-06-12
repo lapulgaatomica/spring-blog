@@ -1,8 +1,10 @@
 package com.project.blog.services;
 
 import com.project.blog.exceptions.EntryNotFoundException;
+import com.project.blog.exceptions.InsufficientPermissionException;
 import com.project.blog.payloads.ChangeRoleRequest;
 import com.project.blog.entities.BlogUser;
+import com.project.blog.payloads.GenericResponse;
 import com.project.blog.payloads.PasswordChangeRequest;
 import com.project.blog.payloads.RegistrationRequest;
 import com.project.blog.entities.Role;
@@ -88,17 +90,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String changePassword(Long id, PasswordChangeRequest request) {
+    public GenericResponse changePassword(Long id, PasswordChangeRequest request) {
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
         BlogUser user = blogUserRepository.findById(id).orElseThrow(
                 () -> new EntryNotFoundException("User with id " + id + " does not exist"));
+
         if(currentlyLoggedInUser.getName().equals(user.getUsername())){
             if(passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
                 if(request.getNewPassword1().equals(request.getNewPassword2())){
                     String newPassword = passwordEncoder.encode(request.getNewPassword1());
                     user.setPassword(newPassword);
                     blogUserRepository.save(user);
-                    return "Password successfully changed";
+                    return new GenericResponse(true, "password successfully changed");
                 }else{
                     throw new IllegalStateException("Please enter your new password again twice and ensure they match");
                 }
@@ -108,6 +111,7 @@ public class UserServiceImpl implements UserService {
                 throw new IllegalStateException("Please enter your old password");
             }
         }
-        throw new IllegalStateException("You don't own this account");
+
+        throw new InsufficientPermissionException("You can't change another user's password");
     }
 }

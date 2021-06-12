@@ -1,6 +1,7 @@
 package com.project.blog.services;
 
 import com.project.blog.payloads.ChangeRoleRequest;
+import com.project.blog.payloads.GenericResponse;
 import com.project.blog.payloads.PasswordChangeRequest;
 import com.project.blog.payloads.RegistrationRequest;
 import com.project.blog.entities.Role;
@@ -11,5 +12,5 @@ public interface UserService {
     String register(RegistrationRequest user);
     List<Role> getRoles();
     String changeRole(String username, ChangeRoleRequest changeRoleRequest);
-    String changePassword(Long id, PasswordChangeRequest request);
+    GenericResponse changePassword(Long id, PasswordChangeRequest request);
 }
