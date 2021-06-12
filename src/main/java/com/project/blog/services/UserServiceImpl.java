@@ -1,5 +1,6 @@
 package com.project.blog.services;
 
+import com.project.blog.exceptions.EntryAlreadyExistsException;
 import com.project.blog.exceptions.EntryNotFoundException;
 import com.project.blog.exceptions.InsufficientPermissionException;
 import com.project.blog.exceptions.PasswordMismatchException;
@@ -38,7 +39,7 @@ public class UserServiceImpl implements UserService {
         boolean emailAlreadyExists = blogUserRepository.findByEmail(registrationRequest.getEmail()).isPresent();
 
         if(usernameAlreadyExists || emailAlreadyExists){
-            throw new IllegalStateException("Username or Email is already taken");
+            throw new EntryAlreadyExistsException("Username or Email is already taken");
         }
 
         BlogUser user = new BlogUser();
@@ -55,10 +56,10 @@ public class UserServiceImpl implements UserService {
                 }
             }
             role = roleRepository.findByName(SUPER_ADMIN).orElseThrow(
-                    () -> new IllegalStateException("role with name " + SUPER_ADMIN.name() + " does not exist"));
+                    () -> new EntryNotFoundException("role with name " + SUPER_ADMIN.name() + " does not exist"));
         }else{
             role = roleRepository.findByName(USER).orElseThrow(
-                    () -> new IllegalStateException("role with name " + USER.name() + " does not exist"));
+                    () -> new EntryNotFoundException("role with name " + USER.name() + " does not exist"));
         }
         user.setRole(role);
         blogUserRepository.save(user);
@@ -71,7 +72,7 @@ public class UserServiceImpl implements UserService {
                 new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
             return roleRepository.findAll();
         }
-        throw new IllegalStateException("You're not an admin");
+        throw new InsufficientPermissionException("You're not an admin");
     }
 
     @Override
@@ -80,14 +81,14 @@ public class UserServiceImpl implements UserService {
 
         if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
             BlogUser user = blogUserRepository.findByUsername(username).orElseThrow(
-                    () -> new IllegalStateException("User " + username + " not found"));
+                    () -> new EntryNotFoundException("User " + username + " not found"));
             user.setRole(roleRepository.findByName(changeRoleRequest.getRole()).orElseThrow(
-                            () -> new IllegalStateException("role with name " + changeRoleRequest.getRole() + " does not exist")));
+                            () -> new EntryNotFoundException("role with name " + changeRoleRequest.getRole() + " does not exist")));
             blogUserRepository.save(user);
             return username + "'s role was successfully changed to " + changeRoleRequest.getRole();
         }
 
-        throw new IllegalStateException("You're not an admin");
+        throw new InsufficientPermissionException("You're not an admin");
     }
 
     @Override
