@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
         PasswordResetToken passwordResetToken = new PasswordResetToken(token, user, expiresAt);
 
         passwordResetTokenRepository.save(passwordResetToken);
-        System.out.println("127.0.0.1:8080/api/v1/users/" + token + "/reset-password");
+        System.out.println("127.0.0.1:8080/api/v1/users/reset-password?token=" + token);
         return new GenericResponse(true, "please check your email for steps to reset your password");
     }
 
@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
     public GenericResponse resetPassword(String token) {
         Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
 
-        if(!passwordResetTokenOptional.isEmpty()){
+        if(passwordResetTokenOptional.isPresent()){
             return new GenericResponse(true, "you can reset your password");
         }else{
             throw new EntryNotFoundException("Please enter a valid url");
