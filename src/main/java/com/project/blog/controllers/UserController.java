@@ -44,4 +44,9 @@ public class UserController {
     public ResponseEntity<GenericResponse> changePassword(@PathVariable("id") Long id, @RequestBody PasswordChangeRequest request){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changePassword(id, request));
     }
+
+    @PostMapping("/{email}/reset-password")
+    public ResponseEntity<String> resetPassword(@PathVariable("email") String email){
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.generatePasswordResetToken(email));
+    }
 }

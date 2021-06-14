@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class ForgotPasswordToken {
+public class PasswordResetToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,4 +23,10 @@ public class ForgotPasswordToken {
     @OneToOne
     private BlogUser user;
     private LocalDateTime expiresAt;
+
+    public PasswordResetToken(String token, BlogUser user, LocalDateTime expiresAt){
+        this.token = token;
+        this.user = user;
+        this.expiresAt = expiresAt;
+    }
 }

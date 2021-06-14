@@ -1,5 +1,6 @@
 package com.project.blog.services;
 
+import com.project.blog.entities.PasswordResetToken;
 import com.project.blog.exceptions.EntryAlreadyExistsException;
 import com.project.blog.exceptions.EntryNotFoundException;
 import com.project.blog.exceptions.InsufficientPermissionException;
@@ -12,6 +13,7 @@ import com.project.blog.payloads.RegistrationRequest;
 import com.project.blog.entities.Role;
 import com.project.blog.entities.enums.RoleName;
 import com.project.blog.repositories.BlogUserRepository;
+import com.project.blog.repositories.PasswordResetTokenRepository;
 import com.project.blog.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,7 +22,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static com.project.blog.entities.enums.RoleName.*;
 
@@ -30,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final BlogUserRepository blogUserRepository;
     private final RoleRepository roleRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Override
     public String register(RegistrationRequest registrationRequest) {
@@ -115,5 +120,17 @@ public class UserServiceImpl implements UserService {
         }
 
         throw new InsufficientPermissionException("You can't change another user's password");
+    }
+
+    @Override
+    public String generatePasswordResetToken(String email) {
+        BlogUser user = blogUserRepository.findByEmail(email)
+                .orElseThrow(() -> new EntryNotFoundException("No user was found with the email " + email));
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(5);
+        PasswordResetToken passwordResetToken = new PasswordResetToken(token, user, expiresAt);
+
+        passwordResetTokenRepository.save(passwordResetToken);
+        return token;
     }
 }
