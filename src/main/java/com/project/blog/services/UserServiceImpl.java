@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.project.blog.entities.enums.RoleName.*;
@@ -123,7 +124,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String generatePasswordResetToken(String email) {
+    public GenericResponse generatePasswordResetToken(String email) {
         BlogUser user = blogUserRepository.findByEmail(email)
                 .orElseThrow(() -> new EntryNotFoundException("No user was found with the email " + email));
         String token = UUID.randomUUID().toString();
@@ -131,6 +132,18 @@ public class UserServiceImpl implements UserService {
         PasswordResetToken passwordResetToken = new PasswordResetToken(token, user, expiresAt);
 
         passwordResetTokenRepository.save(passwordResetToken);
-        return token;
+        System.out.println("127.0.0.1:8080/api/v1/users/" + token + "/reset-password");
+        return new GenericResponse(true, "please check your email for steps to reset your password");
+    }
+
+    @Override
+    public GenericResponse resetPassword(String token) {
+        Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
+
+        if(!passwordResetTokenOptional.isEmpty()){
+            return new GenericResponse(true, "you can reset your password");
+        }else{
+            throw new EntryNotFoundException("Please enter a valid url");
+        }
     }
 }

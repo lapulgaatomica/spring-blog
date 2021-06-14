@@ -13,5 +13,6 @@ public interface UserService {
     List<Role> getRoles();
     String changeRole(String username, ChangeRoleRequest changeRoleRequest);
     GenericResponse changePassword(Long id, PasswordChangeRequest request);
-    String generatePasswordResetToken(String email);
+    GenericResponse generatePasswordResetToken(String email);
+    GenericResponse resetPassword(String token);
 }

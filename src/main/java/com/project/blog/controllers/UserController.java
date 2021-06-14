@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/{email}/reset-password")
-    public ResponseEntity<String> resetPassword(@PathVariable("email") String email){
+    public ResponseEntity<GenericResponse> resetPassword(@PathVariable("email") String email){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.generatePasswordResetToken(email));
     }
 }
