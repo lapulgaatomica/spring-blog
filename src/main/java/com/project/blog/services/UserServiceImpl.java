@@ -135,18 +135,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GenericResponse resetPassword(PasswordResetRequest request) {
-//        Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
-//
-//        if(passwordResetTokenOptional.isPresent()){
-//            return new GenericResponse(true, "you can reset your password");
-//        }else{
-//            throw new EntryNotFoundException("Please enter a valid url");
-//        }
         return null;
     }
 
     @Override
     public GenericResponse requestResetPassword(String token) {
-        return null;
+        Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
+
+        if(passwordResetTokenOptional.isPresent()){
+            return new GenericResponse(true, "you can reset your password");
+        }else{
+            // Todo: Invalid token exception
+            throw new EntryNotFoundException("Invalid token");
+        }
     }
 }
