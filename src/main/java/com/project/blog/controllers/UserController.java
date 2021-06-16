@@ -1,9 +1,6 @@
 package com.project.blog.controllers;
 
-import com.project.blog.payloads.ChangeRoleRequest;
-import com.project.blog.payloads.GenericResponse;
-import com.project.blog.payloads.PasswordChangeRequest;
-import com.project.blog.payloads.RegistrationRequest;
+import com.project.blog.payloads.*;
 import com.project.blog.entities.Role;
 import com.project.blog.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +48,12 @@ public class UserController {
     }
 
     @GetMapping("/reset-password")
-    public ResponseEntity<GenericResponse> resetPassword(@RequestParam(value = "token") String token){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.resetPassword(token));
+    public ResponseEntity<GenericResponse> requestResetPassword(@RequestParam(value = "token") String token){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.requestResetPassword(token));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<GenericResponse> resetPassword(@RequestBody PasswordResetRequest request){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.resetPassword(request));
     }
 }

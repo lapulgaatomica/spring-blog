@@ -5,11 +5,8 @@ import com.project.blog.exceptions.EntryAlreadyExistsException;
 import com.project.blog.exceptions.EntryNotFoundException;
 import com.project.blog.exceptions.InsufficientPermissionException;
 import com.project.blog.exceptions.PasswordMismatchException;
-import com.project.blog.payloads.ChangeRoleRequest;
+import com.project.blog.payloads.*;
 import com.project.blog.entities.BlogUser;
-import com.project.blog.payloads.GenericResponse;
-import com.project.blog.payloads.PasswordChangeRequest;
-import com.project.blog.payloads.RegistrationRequest;
 import com.project.blog.entities.Role;
 import com.project.blog.entities.enums.RoleName;
 import com.project.blog.repositories.BlogUserRepository;
@@ -137,13 +134,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GenericResponse resetPassword(String token) {
-        Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
+    public GenericResponse resetPassword(PasswordResetRequest request) {
+//        Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
+//
+//        if(passwordResetTokenOptional.isPresent()){
+//            return new GenericResponse(true, "you can reset your password");
+//        }else{
+//            throw new EntryNotFoundException("Please enter a valid url");
+//        }
+        return null;
+    }
 
-        if(passwordResetTokenOptional.isPresent()){
-            return new GenericResponse(true, "you can reset your password");
-        }else{
-            throw new EntryNotFoundException("Please enter a valid url");
-        }
+    @Override
+    public GenericResponse requestResetPassword(String token) {
+        return null;
     }
 }
