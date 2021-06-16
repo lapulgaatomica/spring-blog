@@ -11,6 +11,6 @@ public interface UserService {
     String changeRole(String username, ChangeRoleRequest changeRoleRequest);
     GenericResponse changePassword(Long id, PasswordChangeRequest request);
     GenericResponse generatePasswordResetToken(String email);
-    GenericResponse resetPassword(PasswordResetRequest request);
     GenericResponse requestResetPassword(String token);
+    GenericResponse resetPassword(PasswordResetRequest request, String token);
 }

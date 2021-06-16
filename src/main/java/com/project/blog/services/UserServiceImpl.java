@@ -134,7 +134,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GenericResponse resetPassword(PasswordResetRequest request) {
+    public GenericResponse resetPassword(PasswordResetRequest request, String token) {
         return null;
     }
 
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
         Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
 
         if(passwordResetTokenOptional.isPresent()){
-            return new GenericResponse(true, "you can reset your password");
+            return new GenericResponse(true, token);
         }else{
             // Todo: Invalid token exception
             throw new EntryNotFoundException("Invalid token");

@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<GenericResponse> resetPassword(@RequestBody PasswordResetRequest request){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.resetPassword(request));
+    public ResponseEntity<GenericResponse> resetPassword(@RequestBody PasswordResetRequest request, @RequestParam(value = "token") String token){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.resetPassword(request, token));
     }
 }
