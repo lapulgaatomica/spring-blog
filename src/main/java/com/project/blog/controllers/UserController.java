@@ -48,12 +48,13 @@ public class UserController {
     }
 
     @GetMapping("/password/reset")
-    public ResponseEntity<GenericResponse> requestResetPassword(@RequestParam("token") String token){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.requestResetPassword(token));
+    public ResponseEntity<GenericResponse> resetPassword(@RequestParam("token") String token){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.resetPassword(token));
     }
 
-    @PostMapping("/password/reset")
-    public ResponseEntity<GenericResponse> resetPassword(@RequestBody PasswordResetRequest request, @RequestParam("token") String token){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.resetPassword(request, token));
+    @PostMapping("/password/reset/confirm")
+    public ResponseEntity<GenericResponse> confirmPasswordReset(@RequestBody PasswordResetRequest request,
+                                                                @RequestParam("token") String token){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.confirmPasswordReset(request, token));
     }
 }

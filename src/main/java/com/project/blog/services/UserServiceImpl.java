@@ -134,12 +134,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GenericResponse resetPassword(PasswordResetRequest request, String token) {
+    public GenericResponse confirmPasswordReset(PasswordResetRequest request, String token) {
         return null;
     }
 
     @Override
-    public GenericResponse requestResetPassword(String token) {
+    public GenericResponse resetPassword(String token) {
         Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
 
         if(passwordResetTokenOptional.isPresent()){
