@@ -135,7 +135,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public GenericResponse confirmPasswordReset(PasswordResetRequest request, String token) {
-        return null;
+        PasswordResetToken resetToken = passwordResetTokenRepository
+                .findByToken(token).orElseThrow(() -> new EntryNotFoundException("Token " + token + " not found"));
+        BlogUser user = resetToken.getUser();
+        if(request.getPassword1().equals(request.getPassword2())){
+            String newPassword = passwordEncoder.encode(request.getPassword1());
+            user.setPassword(newPassword);
+            blogUserRepository.save(user);
+            return new GenericResponse(true, "password successfully changed");
+        }else{
+            throw new PasswordMismatchException("Please enter your new password again twice and ensure they match");
+        }
     }
 
     @Override
