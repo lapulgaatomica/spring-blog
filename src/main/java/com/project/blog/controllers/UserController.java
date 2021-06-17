@@ -30,30 +30,30 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.getRoles());
     }
 
-    @PatchMapping("/{username}/change-role")
+    @PatchMapping("/{username}/role/change")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<String> giveRole(@PathVariable("username") String username,
                                            @RequestBody ChangeRoleRequest changeRoleRequest){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changeRole(username, changeRoleRequest));
     }
 
-    @PatchMapping("/{id}/change-password")
+    @PatchMapping("/{id}/password/change")
     public ResponseEntity<GenericResponse> changePassword(@PathVariable("id") Long id, @RequestBody PasswordChangeRequest request){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changePassword(id, request));
     }
 
-    @PostMapping("/{email}/reset-password")
+    @PostMapping("/{email}/password/reset")
     public ResponseEntity<GenericResponse> generatePasswordResetToken(@PathVariable("email") String email){
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.generatePasswordResetToken(email));
     }
 
-    @GetMapping("/reset-password")
-    public ResponseEntity<GenericResponse> requestResetPassword(@RequestParam(value = "token") String token){
+    @GetMapping("/password/reset")
+    public ResponseEntity<GenericResponse> requestResetPassword(@RequestParam("token") String token){
         return ResponseEntity.status(HttpStatus.OK).body(userService.requestResetPassword(token));
     }
 
-    @PostMapping("/reset-password")
-    public ResponseEntity<GenericResponse> resetPassword(@RequestBody PasswordResetRequest request, @RequestParam(value = "token") String token){
+    @PostMapping("/password/reset")
+    public ResponseEntity<GenericResponse> resetPassword(@RequestBody PasswordResetRequest request, @RequestParam("token") String token){
         return ResponseEntity.status(HttpStatus.OK).body(userService.resetPassword(request, token));
     }
 }
