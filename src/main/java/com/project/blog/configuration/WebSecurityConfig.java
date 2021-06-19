@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public JwtUsernameAndPasswordAuthenticationFilter jwtUsernameAndPasswordAuthenticationFilter() throws Exception {
          JwtUsernameAndPasswordAuthenticationFilter filter = new JwtUsernameAndPasswordAuthenticationFilter(
                 authenticationManager(), jwtConfigProperties, secretKey);
-        filter.setFilterProcessesUrl("/api/v1/login");
+        filter.setFilterProcessesUrl("/api/v1/users/login");
         return filter;
     }
 }
