@@ -1,10 +1,7 @@
 package com.project.blog.services;
 
 import com.project.blog.entities.PasswordResetToken;
-import com.project.blog.exceptions.EntryAlreadyExistsException;
-import com.project.blog.exceptions.EntryNotFoundException;
-import com.project.blog.exceptions.InsufficientPermissionException;
-import com.project.blog.exceptions.PasswordMismatchException;
+import com.project.blog.exceptions.*;
 import com.project.blog.payloads.*;
 import com.project.blog.entities.BlogUser;
 import com.project.blog.entities.Role;
@@ -129,7 +126,7 @@ public class UserServiceImpl implements UserService {
         PasswordResetToken passwordResetToken = new PasswordResetToken(token, user, expiresAt);
 
         passwordResetTokenRepository.save(passwordResetToken);
-        System.out.println("127.0.0.1:8080/api/v1/users/reset-password?token=" + token);
+        System.out.println("127.0.0.1:8080/api/v1/users/password/reset?token=" + token);
         return new GenericResponse(true, "please check your email for steps to reset your password");
     }
 
@@ -138,7 +135,7 @@ public class UserServiceImpl implements UserService {
         Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
 
         if(passwordResetTokenOptional.isPresent()){
-            return new GenericResponse(true, token);
+            return new GenericResponse(true, "You can reset your password");
         }else{
             // Todo: Invalid token exception
             throw new EntryNotFoundException("Invalid token");
@@ -150,13 +147,18 @@ public class UserServiceImpl implements UserService {
         PasswordResetToken resetToken = passwordResetTokenRepository
                 .findByToken(token).orElseThrow(() -> new EntryNotFoundException("Token " + token + " not found"));
         BlogUser user = resetToken.getUser();
-        if(request.getPassword1().equals(request.getPassword2())){
-            String newPassword = passwordEncoder.encode(request.getPassword1());
-            user.setPassword(newPassword);
-            blogUserRepository.save(user);
-            return new GenericResponse(true, "password successfully changed");
+
+        if(resetToken.getExpiresAt().isAfter(LocalDateTime.now())){
+            if(request.getPassword1().equals(request.getPassword2())){
+                String newPassword = passwordEncoder.encode(request.getPassword1());
+                user.setPassword(newPassword);
+                blogUserRepository.save(user);
+                return new GenericResponse(true, "password successfully changed");
+            }else{
+                throw new PasswordMismatchException("Please enter your new password again twice and ensure they match");
+            }
         }else{
-            throw new PasswordMismatchException("Please enter your new password again twice and ensure they match");
+          throw new InvalidTokenException("Token has expired");
         }
     }
 }
