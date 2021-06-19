@@ -33,17 +33,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .csrf()
+                .disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .addFilter(jwtUsernameAndPasswordAuthenticationFilter())
                 .addFilterAfter(new JwtTokenVerifier(secretKey, jwtConfigProperties), JwtUsernameAndPasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/api/v1/register").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
-                .antMatchers( "/api/v1/users/**/password/**").permitAll()
-                .antMatchers( "/api/v1/users/password/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/api/v1/register")
+                .permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/posts/**")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/users/**/password/**")
+                .permitAll()
+                .antMatchers( "/api/v1/users/password/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
     }
 
     @Override
