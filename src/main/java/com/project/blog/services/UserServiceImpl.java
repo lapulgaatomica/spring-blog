@@ -10,6 +10,7 @@ import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.PasswordResetTokenRepository;
 import com.project.blog.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,6 +26,7 @@ import static com.project.blog.entities.enums.RoleName.*;
 
 @AllArgsConstructor
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final BlogUserRepository blogUserRepository;
@@ -122,11 +124,11 @@ public class UserServiceImpl implements UserService {
         BlogUser user = blogUserRepository.findByEmail(email)
                 .orElseThrow(() -> new EntryNotFoundException("No user was found with the email " + email));
         String token = UUID.randomUUID().toString();
-        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(5);
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(10);
         PasswordResetToken passwordResetToken = new PasswordResetToken(token, user, expiresAt);
 
         passwordResetTokenRepository.save(passwordResetToken);
-        System.out.println("127.0.0.1:8080/api/v1/users/password/reset?token=" + token);
+        log.info("127.0.0.1:8080/api/v1/users/password/reset?token=" + token);
         return new GenericResponse(true, "please check your email for steps to reset your password");
     }
 
