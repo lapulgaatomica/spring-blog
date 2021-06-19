@@ -153,6 +153,7 @@ public class UserServiceImpl implements UserService {
                 String newPassword = passwordEncoder.encode(request.getPassword1());
                 user.setPassword(newPassword);
                 blogUserRepository.save(user);
+                passwordResetTokenRepository.delete(resetToken);
                 return new GenericResponse(true, "password successfully changed");
             }else{
                 throw new PasswordMismatchException("Please enter your new password again twice and ensure they match");
