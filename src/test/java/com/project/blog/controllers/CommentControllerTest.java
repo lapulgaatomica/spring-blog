@@ -4,8 +4,10 @@ import com.project.blog.entities.BlogUser;
 import com.project.blog.entities.Comment;
 import com.project.blog.entities.Post;
 import com.project.blog.payloads.CommentRequest;
+import com.project.blog.security.JwtConfigProperties;
 import com.project.blog.services.CommentService;
 import com.project.blog.services.PostService;
+import com.project.blog.services.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,6 +38,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureJsonTesters
 @WebMvcTest(CommentController.class)
 class CommentControllerTest {
+
+    @MockBean
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockBean
+    private SecretKey secretKey;
+
+    @MockBean
+    private JwtConfigProperties jwtConfigProperties;
 
     @MockBean
     private CommentService commentService;
@@ -54,6 +67,7 @@ class CommentControllerTest {
     private JacksonTester<CommentRequest> jsonCommentRequest;
 
     @Test
+    @WithMockUser
     public void newComment() throws Exception{
         // Given
         BlogUser user = new BlogUser();
@@ -66,7 +80,7 @@ class CommentControllerTest {
 
         // When
         MockHttpServletResponse response = mvc.perform(
-                post("/comment").contentType(MediaType.APPLICATION_JSON)
+                post("/api/v1/posts/1/comments").contentType(MediaType.APPLICATION_JSON)
                         .content(jsonCommentRequest.write(comment).getJson()))
                 .andReturn().getResponse();
 
@@ -91,7 +105,7 @@ class CommentControllerTest {
 
         // When
         MockHttpServletResponse response = mvc.perform(
-                get("/comment/1")).andReturn().getResponse();
+                get("/api/v1/posts/1/comments/1")).andReturn().getResponse();
 
         // Then
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
@@ -102,6 +116,7 @@ class CommentControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void updateComment() throws Exception{
         // Given
         BlogUser user = new BlogUser();
@@ -115,7 +130,7 @@ class CommentControllerTest {
 
         // When
         MockHttpServletResponse response = mvc.perform(
-                patch("/comment/1").contentType(MediaType.APPLICATION_JSON)
+                patch("/api/v1/posts/1/comments/1").contentType(MediaType.APPLICATION_JSON)
                     .content(jsonCommentRequest.write(comment).getJson()))
                 .andReturn().getResponse();
 
@@ -128,9 +143,10 @@ class CommentControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void deleteComment() throws Exception{
         MockHttpServletResponse response = mvc.perform(
-                delete("/comment/1")).andReturn().getResponse();
+                delete("/api/v1/posts/1/comments/1")).andReturn().getResponse();
 
         then(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
