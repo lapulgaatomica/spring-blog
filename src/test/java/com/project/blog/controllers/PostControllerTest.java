@@ -4,7 +4,9 @@ import com.project.blog.entities.BlogUser;
 import com.project.blog.payloads.PostWithCommentsResponse;
 import com.project.blog.entities.Post;
 import com.project.blog.payloads.PostRequest;
+import com.project.blog.security.JwtConfigProperties;
 import com.project.blog.services.PostService;
+import com.project.blog.services.UserDetailsServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,6 +36,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureJsonTesters
 @WebMvcTest(PostController.class)
 public class PostControllerTest {
+
+    @MockBean
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockBean
+    private SecretKey secretKey;
+
+    @MockBean
+    private JwtConfigProperties jwtConfigProperties;
 
     @MockBean
     private PostService postService;
@@ -54,7 +66,6 @@ public class PostControllerTest {
 
 
     @Test
-    @WithUserDetails("dele")
     public void getBlogPosts() throws Exception{
         BlogUser user = new BlogUser();
         Post post = new Post(1L,"title", "test post", LocalDateTime.now(), null, user);
@@ -64,7 +75,7 @@ public class PostControllerTest {
                 .willReturn(newPosts);
 
         MockHttpServletResponse response = mvc.perform(
-                get("/posts")).andReturn().getResponse();
+                get("/api/v1/posts")).andReturn().getResponse();
 
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         then(response.getContentAsString()).isEqualTo(
@@ -81,7 +92,7 @@ public class PostControllerTest {
                 .willReturn(post);
 
         MockHttpServletResponse response = mvc.perform(
-                get("/posts/1")).andReturn().getResponse();
+                get("/api/v1/posts/1")).andReturn().getResponse();
 
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         then(response.getContentAsString()).isEqualTo(
@@ -91,6 +102,7 @@ public class PostControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void newBlogPost() throws Exception{
         BlogUser user = new BlogUser();
         PostRequest post = new PostRequest("title", "test post");
@@ -101,7 +113,7 @@ public class PostControllerTest {
                 .willReturn(postWithDateAdded);
 
         MockHttpServletResponse response = mvc.perform(
-                post("/posts").contentType(MediaType.APPLICATION_JSON)
+                post("/api/v1/posts").contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPostRequest.write(post).getJson()))
                 .andReturn().getResponse();
 
@@ -113,6 +125,7 @@ public class PostControllerTest {
     }
 
     @Test
+    @WithMockUser
     public  void updateBlogPost() throws Exception{
         BlogUser user = new BlogUser();
         PostRequest post = new PostRequest("title updated", "test post updated");
@@ -122,7 +135,7 @@ public class PostControllerTest {
                 .willReturn(expected);
 
         MockHttpServletResponse response = mvc.perform(
-                patch("/posts/1").contentType(MediaType.APPLICATION_JSON)
+                patch("/api/v1/posts/1").contentType(MediaType.APPLICATION_JSON)
                         .content(jsonPostRequest.write(post).getJson()))
                 .andReturn().getResponse();
 
@@ -134,9 +147,10 @@ public class PostControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void deleteBlogPost() throws Exception{
         MockHttpServletResponse response = mvc.perform(
-                delete("/posts/1")).andReturn().getResponse();
+                delete("/api/v1/posts/1")).andReturn().getResponse();
 
         then(response.getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
