@@ -12,12 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 
 
 import java.time.LocalDateTime;
@@ -54,22 +52,22 @@ public class PostServiceTest {
     }
 
     @Test
-    @MockitoSettings(strictness = Strictness.LENIENT)
     public void newBlogPost(){
         // Given
         BlogUser user = new BlogUser("user", "user@user.com", "password");
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        given(securityContext.getAuthentication()).willReturn(authentication);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
-        given(authentication.getPrincipal()).willReturn(user);
-        given(userRepository.findByUsername("user")).willReturn(Optional.of(user));
+        UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("user", "password");
+        Mockito.when(authentication.getPrincipal()).thenReturn(principal);
+//        Mockito.when(authentication.getPrincipal()).thenReturn(user);
         PostRequest postRequest = new PostRequest("title","blog post");
 
         Post post = new Post(null, postRequest.getTitle(), postRequest.getContent(), LocalDateTime.now(), null, user);
 
         // When
-        postService.newBlogPost(postRequest);
+        postService.newBlogPost(postRequest, user.getUsername());
 
         // Then
         verify(postRepository).save(post);

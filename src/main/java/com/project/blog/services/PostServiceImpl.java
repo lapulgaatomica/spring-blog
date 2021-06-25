@@ -33,10 +33,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post newBlogPost(PostRequest postRequest) {
-        BlogUser currentLoggedInUser = userRepository.findByUsername(
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
-        ).orElseThrow(() -> new EntryNotFoundException("User does not exist"));
+    public Post newBlogPost(PostRequest postRequest, String username) {
+        BlogUser currentLoggedInUser = userRepository.findByUsername(null)
+                .orElseThrow(() -> new EntryNotFoundException("User does not exist"));
+
         return postRepository.save(new Post(
                 null, postRequest.getTitle(), postRequest.getContent(),
                 LocalDateTime.now(), null, currentLoggedInUser));

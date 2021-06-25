@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PostService {
     List<Post> getBlogPosts();
-    Post newBlogPost(PostRequest postRequest);
+    Post newBlogPost(PostRequest postRequest, String username);
     Post updateBlogPost(Long id, PostRequest post);
     void deleteBlogPost(Long id);
     PostWithCommentsResponse getBlogPostWithComment(Long id);
