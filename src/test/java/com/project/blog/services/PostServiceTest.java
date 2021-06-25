@@ -100,7 +100,7 @@ public class PostServiceTest {
         given(postRepository.findById(id)).willReturn(Optional.of(post));
 
         // When
-        postService.updateBlogPost(id, postDTO);
+        postService.updateBlogPost(id, postDTO, user.getUsername());
 
         //
         assertThat(post);

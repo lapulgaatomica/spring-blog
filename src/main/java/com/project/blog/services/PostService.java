@@ -9,7 +9,7 @@ import java.util.List;
 public interface PostService {
     List<Post> getBlogPosts();
     Post newBlogPost(PostRequest postRequest, String username);
-    Post updateBlogPost(Long id, PostRequest post);
-    void deleteBlogPost(Long id);
+    Post updateBlogPost(Long id, PostRequest post, String user);
+    void deleteBlogPost(Long idr);
     PostWithCommentsResponse getBlogPostWithComment(Long id);
 }

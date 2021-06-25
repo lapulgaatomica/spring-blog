@@ -55,12 +55,11 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public Post updateBlogPost(Long id, PostRequest postRequest) {
+    public Post updateBlogPost(Long id, PostRequest postRequest, String user) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
-        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
 
-        if(currentlyLoggedInUser.getName().equals(post.getCreator().getUsername())){
+        if(user.equals(post.getCreator().getUsername())){
             post.setContent(postRequest.getContent());
             post.setTitle(postRequest.getTitle());
             post.setDateEdited(LocalDateTime.now());

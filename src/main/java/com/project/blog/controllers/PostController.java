@@ -40,14 +40,17 @@ public class PostController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Post> updateBlogPost(@PathVariable("id") Long id, @RequestBody PostRequest post){
-        Post updatedPost = postService.updateBlogPost(id, post);
+    public ResponseEntity<Post> updateBlogPost(@PathVariable("id") Long id,
+                                               @RequestBody PostRequest post,
+                                               @AuthenticationPrincipal String user){
+        Post updatedPost = postService.updateBlogPost(id, post, user);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') or hasAuthority('post:write')")
-    public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id){
+    public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id,
+                                            @AuthenticationPrincipal String user){
         postService.deleteBlogPost(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

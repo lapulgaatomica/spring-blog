@@ -110,12 +110,12 @@ public class PostControllerTest {
     @Test
     @WithMockUser
     public void newBlogPost() throws Exception{
-        BlogUser user = new BlogUser("user", "user@user.com", "password");
+        BlogUser user = new BlogUser();
         PostRequest post = new PostRequest("title", "test post");
         Post postWithDateAdded  = new Post(1L,"title", "test post", LocalDateTime.now(), null, user);
 
         given(postService
-                .newBlogPost(post, "user"))
+                .newBlogPost(post, user.getUsername()))
                 .willReturn(postWithDateAdded);
 
 
@@ -125,10 +125,10 @@ public class PostControllerTest {
                 .andReturn().getResponse();
 
         then(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
-//        then(response.getContentAsString()).isEqualTo(
-//                jsonPostResponse.write(
-//                        postWithDateAdded
-//                ).getJson());
+        then(response.getContentAsString()).isEqualTo(
+                jsonPostResponse.write(
+                        postWithDateAdded
+                ).getJson());
     }
 
     @Test
@@ -138,7 +138,7 @@ public class PostControllerTest {
         PostRequest post = new PostRequest("title updated", "test post updated");
         Post expected = new Post(1L,"title updated", "test post updated", LocalDateTime.now(), LocalDateTime.now(), user);
         given(postService
-                .updateBlogPost(1L, post))
+                .updateBlogPost(1L, post, user.getUsername()))
                 .willReturn(expected);
 
         MockHttpServletResponse response = mvc.perform(
