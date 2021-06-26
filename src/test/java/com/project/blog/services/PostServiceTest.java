@@ -108,6 +108,7 @@ public class PostServiceTest {
     @Test
     public void deleteBlogPost(){
         // When
+        Post post = new Post();
         Authentication authentication = Mockito.mock(Authentication.class);
         postService.deleteBlogPost(1L, authentication);
 
