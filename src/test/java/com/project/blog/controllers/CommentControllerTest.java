@@ -75,7 +75,7 @@ class CommentControllerTest {
         Post post = new Post(1L, "Post Title", "Post Content", LocalDateTime.now(), null, user);
         Comment commentResponse = new Comment(1L, "Comment Content", post, user);
         given(commentService
-                .newComment(1L, comment))
+                .newComment(1L, comment, user.getUsername()))
                 .willReturn(commentResponse);
 
         // When
@@ -125,7 +125,7 @@ class CommentControllerTest {
         Comment commentResponse = new Comment(1L, "Comment Content", LocalDateTime.now(), LocalDateTime.now(), post, user);
 
         given(commentService
-            .updateComment(1L, comment))
+            .updateComment(1L, comment, user.getUsername()))
             .willReturn(commentResponse);
 
         // When

@@ -27,12 +27,11 @@ public class CommentServiceImpl implements CommentService{
     private final BlogUserRepository userRepository;
 
     @Override
-    public Comment newComment(Long postId, CommentRequest commentRequest) {
+    public Comment newComment(Long postId, CommentRequest commentRequest, String user) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new EntryNotFoundException(
                 "post with ID " + postId + " does not exist"));
-        BlogUser currentLoggedInUser = userRepository.findByUsername(
-                SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString()
-        ).orElseThrow(() -> new EntryNotFoundException("User does not exist"));
+        BlogUser currentLoggedInUser = userRepository.findByUsername(user)
+                .orElseThrow(() -> new EntryNotFoundException("User does not exist"));
         return commentRepository.save(new Comment(
                 null, commentRequest.getContent(), LocalDateTime.now(), null, post, currentLoggedInUser));
     }
@@ -45,11 +44,11 @@ public class CommentServiceImpl implements CommentService{
 
     @Transactional
     @Override
-    public Comment updateComment(Long id, CommentRequest commentRequest) {
+    public Comment updateComment(Long id, CommentRequest commentRequest, String user) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new EntryNotFoundException(
                 "Comment with ID " + id + " does not exist"));
-        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
-        if(currentlyLoggedInUser.getName().equals(comment.getCreator().getUsername())){
+
+        if(user.equals(comment.getCreator().getUsername())){
             comment.setContent(commentRequest.getContent());
             comment.setDateEdited(LocalDateTime.now());
             return comment;
@@ -58,13 +57,12 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void deleteComment(Long id) {
+    public void deleteComment(Long id, Authentication authentication) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new EntryNotFoundException(
                 "Comment with ID " + id + " does not exist"));
-        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
 
-        if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("comment:write")) ||
-                currentlyLoggedInUser.getName().equals(comment.getCreator().getUsername())){
+        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("comment:write")) ||
+                authentication.getName().equals(comment.getCreator().getUsername())){
             commentRepository.delete(comment);
         }else{
             throw new InsufficientPermissionException("Sorry you can't delete this comment");

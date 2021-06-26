@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.Authentication;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -51,7 +53,7 @@ class CommentServiceTest {
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
         // When
-        commentService.newComment(1L, commentRequest);
+        commentService.newComment(1L, commentRequest, user.getUsername());
 
         // Then
         ArgumentCaptor<Comment> commentArgumentCaptor = ArgumentCaptor.forClass(Comment.class);
@@ -87,7 +89,7 @@ class CommentServiceTest {
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
         // When
-        commentService.updateComment(1L, commentRequest);
+        commentService.updateComment(1L, commentRequest, user.getUsername());
 
         // Then
         assertThat(comment);
@@ -96,7 +98,8 @@ class CommentServiceTest {
     @Test
     public void canDeleteComment(){
         // When
-        commentService.deleteComment(1L);
+        Authentication authentication = Mockito.mock(Authentication.class);
+        commentService.deleteComment(1L, authentication);
 
         // Then
         verify(commentRepository).deleteById(1L);
