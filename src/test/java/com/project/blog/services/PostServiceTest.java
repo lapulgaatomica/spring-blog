@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -109,7 +108,8 @@ public class PostServiceTest {
     @Test
     public void deleteBlogPost(){
         // When
-        postService.deleteBlogPost(1L);
+        Authentication authentication = Mockito.mock(Authentication.class);
+        postService.deleteBlogPost(1L, authentication);
 
         // Then
         verify(postRepository).deleteById(1L);

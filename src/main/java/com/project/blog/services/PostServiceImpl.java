@@ -18,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +36,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post newBlogPost(PostRequest postRequest, String username) {
-        BlogUser currentLoggedInUser = userRepository.findByUsername(null)
+        BlogUser currentLoggedInUser = userRepository.findByUsername(username)
                 .orElseThrow(() -> new EntryNotFoundException("User does not exist"));
 
         return postRepository.save(new Post(
@@ -70,10 +72,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deleteBlogPost(Long id) {
+    public void deleteBlogPost(Long id, Authentication currentlyLoggedInUser) {
         Post post = postRepository.findById(id).
                 orElseThrow(() -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
-        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+
 
         if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("post:write")) ||
                 currentlyLoggedInUser.getName().equals(post.getCreator().getUsername())){
