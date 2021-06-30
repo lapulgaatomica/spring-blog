@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -106,17 +108,22 @@ public class PostServiceTest {
         assertThat(updatedPost.getDateEdited()).isAfter(post.getDateCreated());
     }
 
-    @Test
-    public void deleteBlogPost(){
+    @ParameterizedTest
+    @CsvSource({
+            "user,ROLE_USER",
+            "postwriter,post:write"
+    })
+    public void ownerOfPostOrUserWithSufficientPermissionCanDeleteBlogPost(
+            String nameOfCurrentlyLoggedInUSer, String roleOfCurrentlyLoggedInUser){
         // given
         BlogUser user = new BlogUser(1L, "user", "user@user.com", "password", null);
         Post post = new Post(null, "title", "blog post", LocalDateTime.now(), null, user);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
         // when
-        postService.deleteBlogPost(1L, "user",
-                Set.of(new SimpleGrantedAuthority("post:write")));//this only tests that the owner of the post can delete it
-        //todo write test to test that someone with sufficient permission can't delete a post
+        postService.deleteBlogPost(1L, nameOfCurrentlyLoggedInUSer,
+                Set.of(new SimpleGrantedAuthority(roleOfCurrentlyLoggedInUser)));
+        //todo write test to test that someone without sufficient permission can't delete a post
 
         // Then
         verify(postRepository).delete(post);
