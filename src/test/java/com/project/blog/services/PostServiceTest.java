@@ -9,13 +9,9 @@ import com.project.blog.repositories.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +19,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +31,10 @@ public class PostServiceTest {
     private CommentRepository commentRepository;
     @Mock
     private BlogUserRepository userRepository;
+
+    @Captor
+    private ArgumentCaptor<Post> postArgumentCaptor;
+
     private PostService postService;
 
     @BeforeEach
@@ -53,23 +54,21 @@ public class PostServiceTest {
     @Test
     public void newBlogPost(){
         // Given
-        BlogUser user = new BlogUser("user", "user@user.com", "password");
-        Authentication authentication = Mockito.mock(Authentication.class);
-        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-        UsernamePasswordAuthenticationToken principal = new UsernamePasswordAuthenticationToken("user", "password");
-        Mockito.when(authentication.getPrincipal()).thenReturn(principal);
-//        Mockito.when(authentication.getPrincipal()).thenReturn(user);
+        BlogUser user = new BlogUser(1L, "user", "user@user.com", "password", null);
         PostRequest postRequest = new PostRequest("title","blog post");
+        given(userRepository.findByUsername(user.getUsername()))
+                .willReturn(Optional.of(user));
 
-        Post post = new Post(null, postRequest.getTitle(), postRequest.getContent(), LocalDateTime.now(), null, user);
+        Post post = new Post(null, postRequest.getTitle(),
+                postRequest.getContent(), LocalDateTime.now(), null, user);
 
         // When
-        postService.newBlogPost(postRequest, user.getUsername());
+        postService.newBlogPost(postRequest, "user");
 
         // Then
-        verify(postRepository).save(post);
+        then(postRepository).should().save(postArgumentCaptor.capture());
+        Post postArgumentCaptorValue = postArgumentCaptor.getValue();
+        assertThat(postArgumentCaptorValue).usingRecursiveComparison().ignoringFieldsOfTypes(LocalDateTime.class).isEqualTo(post);
     }
 
     @Test
@@ -93,7 +92,7 @@ public class PostServiceTest {
     public void updateBlogPost(){
         long id =  1;
         PostRequest postDTO = new PostRequest("title", "blog post");
-        BlogUser user = new BlogUser();
+        BlogUser user = new BlogUser("user", "user@user.com", "password");
         Post post = new Post(null, postDTO.getTitle(), postDTO.getContent(), LocalDateTime.now(), null, user);
         // Given
         given(postRepository.findById(id)).willReturn(Optional.of(post));
@@ -109,7 +108,11 @@ public class PostServiceTest {
     public void deleteBlogPost(){
         // When
         Post post = new Post();
+        BlogUser user = new BlogUser();
+        postRepository.save(new Post(1L, "title", "content", LocalDateTime.now(), null, user));
+        given(postRepository.findById(1L)).willReturn(Optional.of(post));
         Authentication authentication = Mockito.mock(Authentication.class);
+        given(post.getCreator()).willReturn(user);
         postService.deleteBlogPost(1L, authentication);
 
         // Then
