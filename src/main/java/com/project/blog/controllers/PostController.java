@@ -52,7 +52,7 @@ public class PostController {
     @PreAuthorize("hasRole('ROLE_USER') or hasAuthority('post:write')")
     public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id,
                                             Authentication authentication){
-        postService.deleteBlogPost(id, authentication);
+        postService.deleteBlogPost(id, authentication.getName(), authentication.getAuthorities());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

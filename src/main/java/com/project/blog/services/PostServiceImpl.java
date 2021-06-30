@@ -12,15 +12,14 @@ import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -72,13 +71,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deleteBlogPost(Long id, Authentication currentlyLoggedInUser) {
+    public void deleteBlogPost(Long id, String nameOfCurrentlyLoggedInUser, Collection<? extends GrantedAuthority> authoritiesOfCurrentlyLoggedInUser) {
         Post post = postRepository.findById(id).
                 orElseThrow(() -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
 
 
-        if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("post:write")) ||
-                currentlyLoggedInUser.getName().equals(post.getCreator().getUsername())){
+        if(authoritiesOfCurrentlyLoggedInUser.contains(new SimpleGrantedAuthority("post:write")) ||
+                nameOfCurrentlyLoggedInUser.equals(post.getCreator().getUsername())){
             postRepository.delete(post);
         }else{
             throw new InsufficientPermissionException("Sorry you can't delete this post");
