@@ -93,18 +93,19 @@ public class PostServiceTest {
 
     @Test
     public void updateBlogPost(){
+        // Given
         long id =  1;
         PostRequest postRequest = new PostRequest("title edited", "blog post edited");
         BlogUser user = new BlogUser("user", "user@user.com", "password");
         Post post = new Post(null, "title", "content", LocalDateTime.now(), null, user);
-        // Given
         given(postRepository.findById(id)).willReturn(Optional.of(post));
+
         // When
         Post updatedPost = postService.updateBlogPost(id, postRequest, user.getUsername());
 
         //
-        assertThat(updatedPost.getTitle()).isEqualTo("title edited");
-        assertThat(updatedPost.getContent()).isEqualTo("blog post edited");
+        assertThat(updatedPost.getTitle()).isEqualTo(postRequest.getTitle());
+        assertThat(updatedPost.getContent()).isEqualTo(postRequest.getContent());
         assertThat(updatedPost.getDateEdited()).isAfter(post.getDateCreated());
     }
 

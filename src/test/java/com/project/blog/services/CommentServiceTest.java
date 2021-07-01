@@ -11,13 +11,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -35,6 +36,9 @@ class CommentServiceTest {
     @Mock
     private BlogUserRepository userRepository;
 
+    @Captor
+    private ArgumentCaptor<Comment> commentArgumentCaptor;
+
     private CommentService commentService;
 
     @BeforeEach
@@ -43,24 +47,23 @@ class CommentServiceTest {
     }
 
     @Test
-    public void addNewComment(){
+    public void canAddNewComment(){
         // Given
-        BlogUser user = new BlogUser();
+        BlogUser user = new BlogUser(1L, "user", "user@user.com", "password", null);
         Post post = new Post(1L, "post title", "post", LocalDateTime.now(), null, user);
-        CommentRequest commentRequest = new CommentRequest();
-
-        Comment comment = new Comment(1L, "content", post, user);
+        CommentRequest commentRequest = new CommentRequest("content");
+        Comment comment = new Comment(null, commentRequest.getContent(), post, user);
         given(postRepository.findById(1L)).willReturn(Optional.of(post));
+        given(userRepository.findByUsername(user.getUsername())).willReturn(Optional.of(user));
 
         // When
         commentService.newComment(1L, commentRequest, user.getUsername());
 
         // Then
-        ArgumentCaptor<Comment> commentArgumentCaptor = ArgumentCaptor.forClass(Comment.class);
         verify(commentRepository).save(commentArgumentCaptor.capture());
-        Comment capturedComment = commentArgumentCaptor.getValue();
-        assertThat(capturedComment.getContent()).isEqualTo(commentRequest.getContent());
-//        assertThat(capturedComment.getPost().getId()).isEqualTo(commentRequest.getPostId());
+        Comment commentArgumentCaptorValue = commentArgumentCaptor.getValue();
+        assertThat(commentArgumentCaptorValue)
+                .usingRecursiveComparison().ignoringFieldsOfTypes(LocalDateTime.class).isEqualTo(comment);
     }
 
     @Test
@@ -81,27 +84,33 @@ class CommentServiceTest {
     @Test
     public void canUpdateComment(){
         // Given
-        BlogUser user = new BlogUser();
+        BlogUser user = new BlogUser("user", "user@user.com", "password");
         Post post = new Post(1L, "post title", "post", LocalDateTime.now(), null, user);
-        CommentRequest commentRequest = new CommentRequest();
-
-        Comment comment = new Comment(1L, "content", post, user);
+        CommentRequest commentRequest = new CommentRequest("updated comment");
+        Comment comment = new Comment(1L, "comment", post, user);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
         // When
-        commentService.updateComment(1L, commentRequest, user.getUsername());
+        Comment updatedComment = commentService.updateComment(1L, commentRequest, user.getUsername());
 
         // Then
-        assertThat(comment);
+        assertThat(updatedComment.getContent()).isEqualTo(commentRequest.getContent());
+        assertThat(updatedComment.getDateEdited()).isAfter(post.getDateCreated());
     }
 
     @Test
     public void canDeleteComment(){
+        // given
+        BlogUser user = new BlogUser(1L, "user", "user@user.com", "password", null);
+        Post post = new Post(null, "title", "blog post", LocalDateTime.now(), null, user);
+        Comment comment = new Comment(null, "content", post, user);
+        given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
+
+
         // When
-        Authentication authentication = Mockito.mock(Authentication.class);
-        commentService.deleteComment(1L, authentication);
+        commentService.deleteComment(1L, user.getUsername(), Set.of(new SimpleGrantedAuthority("comment:write")));
 
         // Then
-        verify(commentRepository).deleteById(1L);
+        verify(commentRepository).delete(comment);
     }
 }

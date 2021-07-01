@@ -10,13 +10,13 @@ import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -57,12 +57,13 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void deleteComment(Long id, Authentication authentication) {
+    public void deleteComment(Long id, String nameOfCurrentlyLoggedInUser,
+                              Collection<? extends GrantedAuthority> authoritiesOfCurrentlyLoggedInUser) {
         Comment comment = commentRepository.findById(id).orElseThrow(() -> new EntryNotFoundException(
                 "Comment with ID " + id + " does not exist"));
 
-        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("comment:write")) ||
-                authentication.getName().equals(comment.getCreator().getUsername())){
+        if(authoritiesOfCurrentlyLoggedInUser.contains(new SimpleGrantedAuthority("comment:write")) ||
+                nameOfCurrentlyLoggedInUser.equals(comment.getCreator().getUsername())){
             commentRepository.delete(comment);
         }else{
             throw new InsufficientPermissionException("Sorry you can't delete this comment");

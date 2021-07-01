@@ -40,7 +40,7 @@ public class CommentController {
     @PreAuthorize("hasRole('ROLE_USER') or hasAuthority('comment:write')")
     public ResponseEntity<?> deleteComment(@PathVariable("id") Long id,
                                            Authentication authentication){
-        commentService.deleteComment(id, authentication);
+        commentService.deleteComment(id, authentication.getName(), authentication.getAuthorities());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
