@@ -11,7 +11,6 @@ import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -71,7 +70,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deleteBlogPost(Long id, String nameOfCurrentlyLoggedInUser, Collection<? extends GrantedAuthority> authoritiesOfCurrentlyLoggedInUser) {
+    public void deleteBlogPost(Long id, String nameOfCurrentlyLoggedInUser,
+                               Collection<? extends GrantedAuthority> authoritiesOfCurrentlyLoggedInUser) {
         Post post = postRepository.findById(id).
                 orElseThrow(() -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
 

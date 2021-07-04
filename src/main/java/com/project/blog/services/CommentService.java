@@ -2,7 +2,6 @@ package com.project.blog.services;
 
 import com.project.blog.entities.Comment;
 import com.project.blog.payloads.CommentRequest;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
