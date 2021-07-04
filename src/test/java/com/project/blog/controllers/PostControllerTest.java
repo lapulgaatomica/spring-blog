@@ -104,20 +104,22 @@ public class PostControllerTest {
     @Test
     @WithMockUser
     public void newBlogPost() throws Exception{
+        // Given
         BlogUser user = new BlogUser();
         PostRequest post = new PostRequest("title", "test post");
-        Post postWithDateAdded  = new Post(1L,"title", "test post", LocalDateTime.now(), null, user);
-
+        Post postWithDateAdded  = new Post(
+                1L,"title", "test post", LocalDateTime.now(), null, user);
         given(postService
                 .newBlogPost(post, user.getUsername()))
                 .willReturn(postWithDateAdded);
 
-
+        // When
         MockHttpServletResponse response = mvc.perform(
                 post("/api/v1/posts").contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonPostRequest.write(post).getJson()))
-                .andReturn().getResponse();
+                        .content(jsonPostRequest.write(post).getJson())
+                ).andReturn().getResponse();
 
+        // Then
         then(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         then(response.getContentAsString()).isEqualTo(
                 jsonPostResponse.write(
