@@ -4,6 +4,7 @@ import com.project.blog.entities.Post;
 import com.project.blog.payloads.PostRequest;
 import com.project.blog.payloads.PostWithCommentsResponse;
 import com.project.blog.services.PostService;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,23 +36,23 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> newBlogPost(@RequestBody @Valid PostRequest post,
-                                            @AuthenticationPrincipal String user){
+    public ResponseEntity<Post> newBlogPost(@ApiParam(hidden = true) @AuthenticationPrincipal String user,
+                                            @RequestBody @Valid PostRequest post){
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.newBlogPost(post, user));
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Post> updateBlogPost(@PathVariable("id") Long id,
-                                               @RequestBody PostRequest post,
-                                               @AuthenticationPrincipal String user){
+    public ResponseEntity<Post> updateBlogPost(@ApiParam(hidden = true) @AuthenticationPrincipal String user,
+                                               @PathVariable("id") Long id,
+                                               @RequestBody PostRequest post){
         Post updatedPost = postService.updateBlogPost(id, post, user);
         return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') or hasAuthority('post:write')")
-    public ResponseEntity<?> deleteBlogPost(@PathVariable("id") Long id,
-                                            Authentication authentication){
+    public ResponseEntity<?> deleteBlogPost(@ApiParam(hidden = true) Authentication authentication,
+                                            @PathVariable("id") Long id){
         postService.deleteBlogPost(id, authentication.getName(), authentication.getAuthorities());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
