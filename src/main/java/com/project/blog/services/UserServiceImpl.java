@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     @Override
-    public String register(RegistrationRequest registrationRequest) {
+    public GenericResponse register(RegistrationRequest registrationRequest) {
         // Todo verify that email is valid
 
         boolean usernameAlreadyExists = blogUserRepository.findByUsername(registrationRequest.getUsername()).isPresent();
@@ -65,7 +65,8 @@ public class UserServiceImpl implements UserService {
         }
         user.setRole(role);
         blogUserRepository.save(user);
-        return user.getEmail();
+
+        return new GenericResponse(true, user.getEmail());
     }
 
     @Override

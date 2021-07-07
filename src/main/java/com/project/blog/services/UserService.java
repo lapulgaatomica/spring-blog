@@ -6,7 +6,7 @@ import com.project.blog.entities.Role;
 import java.util.List;
 
 public interface UserService {
-    String register(RegistrationRequest user);
+    GenericResponse register(RegistrationRequest user);
     List<Role> getRoles();
     String changeRole(String username, ChangeRoleRequest changeRoleRequest);
     GenericResponse changePassword(Long id, PasswordChangeRequest request);
