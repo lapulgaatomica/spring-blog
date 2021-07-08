@@ -20,8 +20,8 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<GenericResponse> register(@RequestBody @Valid RegistrationRequest user){
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(user));
+    public ResponseEntity<GenericResponse> register(@RequestBody @Valid RegistrationRequest registrationRequest){
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(registrationRequest));
     }
 
     @GetMapping("/roles")
