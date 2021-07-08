@@ -8,7 +8,7 @@ import java.util.List;
 public interface UserService {
     GenericResponse register(RegistrationRequest user);
     List<Role> getRoles();
-    String changeRole(String username, ChangeRoleRequest changeRoleRequest);
+    GenericResponse changeRole(String username, ChangeRoleRequest changeRoleRequest);
     GenericResponse changePassword(Long id, PasswordChangeRequest request);
     GenericResponse generatePasswordResetToken(String email);
     GenericResponse resetPassword(String token);

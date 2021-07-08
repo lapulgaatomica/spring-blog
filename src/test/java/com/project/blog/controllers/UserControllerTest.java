@@ -1,6 +1,10 @@
 package com.project.blog.controllers;
 
+import com.project.blog.entities.Role;
+import com.project.blog.entities.enums.RoleName;
+import com.project.blog.payloads.ChangeRoleRequest;
 import com.project.blog.payloads.GenericResponse;
+import com.project.blog.payloads.PasswordChangeRequest;
 import com.project.blog.payloads.RegistrationRequest;
 import com.project.blog.security.JwtConfigProperties;
 import com.project.blog.services.UserDetailsServiceImpl;
@@ -15,14 +19,19 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.crypto.SecretKey;
 
+import java.util.List;
+
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
@@ -48,18 +57,24 @@ class UserControllerTest {
     private JacksonTester<RegistrationRequest> jsonRegistrationRequest;
 
     @Autowired
-    private JacksonTester<GenericResponse> jsonRegistrationResponse;
+    private JacksonTester<GenericResponse> jsonGenericResponse;
+
+    @Autowired
+    private JacksonTester<List<Role>> jsonRolesResponse;
+
+    @Autowired
+    private JacksonTester<ChangeRoleRequest> jsonChangeRoleRequest;
+
+    @Autowired
+    private JacksonTester<PasswordChangeRequest> jsonPasswordChangeRequest;
 
     @Test
-    public void register() throws Exception {
+     void register() throws Exception {
         // Given
         RegistrationRequest registrationRequest =
-                new RegistrationRequest("usergaga", "emailgaga@email.com", "password");
+                new RegistrationRequest("user", "email@email.com", "password");
         GenericResponse registrationResponse = new GenericResponse(true, registrationRequest.getEmail());
-        given(userService
-                .register(registrationRequest))
-                .willReturn(registrationResponse);
-
+        given(userService.register(registrationRequest)).willReturn(registrationResponse);
 
         // When
         MockHttpServletResponse response = mvc.perform(
@@ -70,21 +85,77 @@ class UserControllerTest {
         // Then
         then(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
         then(response.getContentAsString()).isEqualTo(
-                jsonRegistrationResponse.write(
+                jsonGenericResponse.write(
                     registrationResponse
                 ).getJson());
     }
 
     @Test
-    void roles() {
+    @WithMockUser(authorities = "user:write")
+    void roles() throws Exception{
+        // Given
+        Role role = new Role(RoleName.USER);
+        Role role1 = new Role(RoleName.POST_MODERATOR);
+        Role role2 = new Role(RoleName.COMMENT_MODERATOR);
+        Role role3 = new Role(RoleName.SUPER_ADMIN);
+        List<Role> roles = List.of(role, role1, role2, role3);
+        given(userService.getRoles()).willReturn(roles);
+
+        // When
+        MockHttpServletResponse response = mvc
+                .perform(get("/api/v1/users/roles")).andReturn().getResponse();
+
+        // Then
+        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getContentAsString())
+                .isEqualTo(jsonRolesResponse.write(roles).getJson());
     }
 
     @Test
-    void giveRole() {
+    @WithMockUser(authorities = "user:write")
+    void giveRole() throws Exception{
+        // Given
+        String username = "user";
+        ChangeRoleRequest changeRoleRequest = new ChangeRoleRequest();
+        changeRoleRequest.setRole(RoleName.SUPER_ADMIN);
+        GenericResponse roleChangeResponse = new GenericResponse(true,
+                username + "'s role was successfully changed to " + changeRoleRequest.getRole());
+        given(userService.changeRole(username, changeRoleRequest)).willReturn(roleChangeResponse);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                patch("/api/v1/users/user/role/change")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonChangeRoleRequest.write(changeRoleRequest).getJson())
+        ).andReturn().getResponse();
+
+        // Then
+        then(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
+        then(response.getContentAsString())
+                .isEqualTo(jsonGenericResponse.write(roleChangeResponse).getJson());
     }
 
     @Test
-    void changePassword() {
+    @WithMockUser
+    void changePassword() throws Exception {
+        // Given
+        Long id = 1L;
+        PasswordChangeRequest passwordChangeRequest =
+                new PasswordChangeRequest("old", "new", "new");
+        GenericResponse passwordChangeResponse =
+                new GenericResponse(true, "password successfully changed");
+        given(userService.changePassword(id, passwordChangeRequest)).willReturn(passwordChangeResponse);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                patch("/api/v1/users/1/password/change")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonPasswordChangeRequest.write(passwordChangeRequest).getJson())
+        ).andReturn().getResponse();
+
+        // Then
+        then(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
+        then(response.getContentAsString()).isEqualTo(jsonGenericResponse.write(passwordChangeResponse).getJson());
     }
 
     @Test

@@ -32,13 +32,14 @@ public class UserController {
 
     @PatchMapping("/{username}/role/change")
     @PreAuthorize("hasAuthority('user:write')")
-    public ResponseEntity<String> giveRole(@PathVariable("username") String username,
+    public ResponseEntity<GenericResponse> giveRole(@PathVariable("username") String username,
                                            @RequestBody ChangeRoleRequest changeRoleRequest){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changeRole(username, changeRoleRequest));
     }
 
     @PatchMapping("/{id}/password/change")
-    public ResponseEntity<GenericResponse> changePassword(@PathVariable("id") Long id, @RequestBody PasswordChangeRequest request){
+    public ResponseEntity<GenericResponse> changePassword(@PathVariable("id") Long id,
+                                                          @RequestBody PasswordChangeRequest request){
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changePassword(id, request));
     }
 

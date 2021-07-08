@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String changeRole(String username, ChangeRoleRequest changeRoleRequest) {
+    public GenericResponse changeRole(String username, ChangeRoleRequest changeRoleRequest) {
         Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
 
         if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
@@ -88,7 +88,8 @@ public class UserServiceImpl implements UserService {
             user.setRole(roleRepository.findByName(changeRoleRequest.getRole()).orElseThrow(
                             () -> new EntryNotFoundException("role with name " + changeRoleRequest.getRole() + " does not exist")));
             blogUserRepository.save(user);
-            return username + "'s role was successfully changed to " + changeRoleRequest.getRole();
+            return new GenericResponse(true,
+                    username + "'s role was successfully changed to " + changeRoleRequest.getRole());
         }
 
         throw new InsufficientPermissionException("You're not an admin");

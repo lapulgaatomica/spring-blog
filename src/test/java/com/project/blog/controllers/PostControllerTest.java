@@ -70,9 +70,7 @@ public class PostControllerTest {
         BlogUser user = new BlogUser();
         Post post = new Post(1L,"title", "test post", LocalDateTime.now(), null, user);
         List<Post> newPosts = List.of(post);
-        given(postService
-                .getBlogPosts())
-                .willReturn(newPosts);
+        given(postService.getBlogPosts()).willReturn(newPosts);
 
         MockHttpServletResponse response = mvc.perform(
                 get("/api/v1/posts")).andReturn().getResponse();
@@ -86,7 +84,8 @@ public class PostControllerTest {
 
     @Test
     public void getBlogPost() throws Exception{
-        PostWithCommentsResponse post = new PostWithCommentsResponse(1L,"title", "test post", LocalDateTime.now(), null, List.of());
+        PostWithCommentsResponse post = new PostWithCommentsResponse(
+                1L,"title", "test post", LocalDateTime.now(), null, List.of());
         given(postService
                 .getBlogPostWithComment(1L))
                 .willReturn(post);
@@ -132,7 +131,8 @@ public class PostControllerTest {
     public  void updateBlogPost() throws Exception{
         BlogUser user = new BlogUser();
         PostRequest post = new PostRequest("title updated", "test post updated");
-        Post expected = new Post(1L,"title updated", "test post updated", LocalDateTime.now(), LocalDateTime.now(), user);
+        Post expected = new Post(
+                1L,"title updated", "test post updated", LocalDateTime.now(), LocalDateTime.now(), user);
         given(postService
                 .updateBlogPost(1L, post, user.getUsername()))
                 .willReturn(expected);
