@@ -2,10 +2,7 @@ package com.project.blog.controllers;
 
 import com.project.blog.entities.Role;
 import com.project.blog.entities.enums.RoleName;
-import com.project.blog.payloads.ChangeRoleRequest;
-import com.project.blog.payloads.GenericResponse;
-import com.project.blog.payloads.PasswordChangeRequest;
-import com.project.blog.payloads.RegistrationRequest;
+import com.project.blog.payloads.*;
 import com.project.blog.security.JwtConfigProperties;
 import com.project.blog.services.UserDetailsServiceImpl;
 import com.project.blog.services.UserService;
@@ -67,6 +64,9 @@ class UserControllerTest {
 
     @Autowired
     private JacksonTester<PasswordChangeRequest> jsonPasswordChangeRequest;
+
+    @Autowired
+    private JacksonTester<PasswordResetRequest> jsonPasswordResetRequest;
 
     @Test
      void register() throws Exception {
@@ -159,14 +159,59 @@ class UserControllerTest {
     }
 
     @Test
-    void generatePasswordResetToken() {
+    void generatePasswordResetToken() throws Exception {
+        // Given
+        String email = "email@email.com";
+        GenericResponse genericResponse =
+                new GenericResponse(true, "please check your email for steps to reset your password");
+        given(userService.generatePasswordResetToken(email)).willReturn(genericResponse);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/v1/users/" + email + "/password/reset")
+        ).andReturn().getResponse();
+
+        // Then
+        then(response.getStatus()).isEqualTo(HttpStatus.CREATED.value());
+        then(response.getContentAsString()).isEqualTo(jsonGenericResponse.write(genericResponse).getJson());
     }
 
     @Test
-    void resetPassword() {
+    void resetPassword() throws Exception {
+        //Given
+        String token = "tokennekottokennekot";
+        GenericResponse genericResponse =
+                new GenericResponse(true, "Please reset your password");
+        given(userService.resetPassword(token)).willReturn(genericResponse);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                get("/api/v1/users/password/reset?token=" + token)
+        ).andReturn().getResponse();
+
+        // Then
+        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getContentAsString()).isEqualTo(jsonGenericResponse.write(genericResponse).getJson());
     }
 
     @Test
-    void confirmPasswordReset() {
+    void confirmPasswordReset() throws Exception {
+        // Given
+        String token = "tokennekottokennekot";
+        PasswordResetRequest request = new PasswordResetRequest("password", "password");
+        GenericResponse genericResponse =
+                new GenericResponse(true, "password successfully changed");
+        given(userService.confirmPasswordReset(request, token)).willReturn(genericResponse);
+
+        // When
+        MockHttpServletResponse response = mvc.perform(
+                post("/api/v1/users/password/reset/confirm?token=" + token)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(jsonPasswordResetRequest.write(request).getJson())
+        ).andReturn().getResponse();
+
+        // Then
+        then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+        then(response.getContentAsString()).isEqualTo(jsonGenericResponse.write(genericResponse).getJson());
     }
 }

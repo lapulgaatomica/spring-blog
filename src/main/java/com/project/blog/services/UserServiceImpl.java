@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
 
         if(passwordResetTokenOptional.isPresent()){
             log.info("127.0.0.1:8080/api/v1/users/password/reset/confirm?token=" + token);
-            return new GenericResponse(true, "You can reset your password");
+            return new GenericResponse(true, "Please reset your password");
         }else{
             // Todo: Invalid token exception
             throw new EntryNotFoundException("Invalid token");
