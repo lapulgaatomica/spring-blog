@@ -6,7 +6,6 @@ import com.project.blog.payloads.PostRequest;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,14 +23,15 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verify;
 
-@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class PostServiceTest {
 
     @Mock
     private PostRepository postRepository;
+
     @Mock
     private CommentRepository commentRepository;
+
     @Mock
     private BlogUserRepository userRepository;
 
@@ -71,7 +71,8 @@ public class PostServiceTest {
         // Then
         then(postRepository).should().save(postArgumentCaptor.capture());
         Post postArgumentCaptorValue = postArgumentCaptor.getValue();
-        assertThat(postArgumentCaptorValue).usingRecursiveComparison().ignoringFieldsOfTypes(LocalDateTime.class).isEqualTo(post);
+        assertThat(postArgumentCaptorValue).usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class).isEqualTo(post);
     }
 
     @Test

@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
         Role role;
 
-        if(blogUserRepository.count() == 0){
+        if(blogUserRepository.count() == 0){//If there are no prior users, make this user an admin
             if(roleRepository.count() == 0){
                 for(RoleName roleName: RoleName.values()){
                     roleRepository.save(new Role(roleName));
@@ -59,10 +59,11 @@ public class UserServiceImpl implements UserService {
             }
             role = roleRepository.findByName(SUPER_ADMIN).orElseThrow(
                     () -> new EntryNotFoundException("role with name " + SUPER_ADMIN.name() + " does not exist"));
-        }else{
+        }else{//make this user an ordinary user
             role = roleRepository.findByName(USER).orElseThrow(
                     () -> new EntryNotFoundException("role with name " + USER.name() + " does not exist"));
         }
+
         user.setRole(role);
         blogUserRepository.save(user);
 
