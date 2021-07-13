@@ -12,12 +12,14 @@ import com.project.blog.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -71,19 +73,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Role> getRoles() {
-        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(
-                new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
+    public List<Role> getRoles(Authentication authentication) {
+        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
             return roleRepository.findAll();
         }
         throw new InsufficientPermissionException("You're not an admin");
     }
 
     @Override
-    public GenericResponse changeRole(String username, ChangeRoleRequest changeRoleRequest) {
-        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+    public GenericResponse changeRole(String username,
+                                      ChangeRoleRequest changeRoleRequest,
+                                      Authentication authentication) {
 
-        if(currentlyLoggedInUser.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
+
+        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
             BlogUser user = blogUserRepository.findByUsername(username).orElseThrow(
                     () -> new EntryNotFoundException("User " + username + " not found"));
             user.setRole(roleRepository.findByName(changeRoleRequest.getRole()).orElseThrow(
@@ -97,12 +100,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public GenericResponse changePassword(Long id, PasswordChangeRequest request) {
-        Authentication currentlyLoggedInUser = SecurityContextHolder.getContext().getAuthentication();
+    public GenericResponse changePassword(Long id,
+                                          PasswordChangeRequest request,
+                                          Authentication authentication) {
         BlogUser user = blogUserRepository.findById(id).orElseThrow(
                 () -> new EntryNotFoundException("User with id " + id + " does not exist"));
 
-        if(currentlyLoggedInUser.getName().equals(user.getUsername())){
+        if(authentication.getName().equals(user.getUsername())){
             if(passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
                 if(request.getNewPassword1().equals(request.getNewPassword2())){
                     String newPassword = passwordEncoder.encode(request.getNewPassword1());

@@ -8,6 +8,7 @@ import com.project.blog.services.UserDetailsServiceImpl;
 import com.project.blog.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,7 +17,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -99,7 +102,8 @@ class UserControllerTest {
         Role role2 = new Role(RoleName.COMMENT_MODERATOR);
         Role role3 = new Role(RoleName.SUPER_ADMIN);
         List<Role> roles = List.of(role, role1, role2, role3);
-        given(userService.getRoles()).willReturn(roles);
+        Authentication auth = Mockito.mock(Authentication.class);
+        given(userService.getRoles(auth)).willReturn(roles);
 
         // When
         MockHttpServletResponse response = mvc
@@ -120,7 +124,8 @@ class UserControllerTest {
         changeRoleRequest.setRole(RoleName.SUPER_ADMIN);
         GenericResponse roleChangeResponse = new GenericResponse(true,
                 username + "'s role was successfully changed to " + changeRoleRequest.getRole());
-        given(userService.changeRole(username, changeRoleRequest)).willReturn(roleChangeResponse);
+        Authentication auth = Mockito.mock(Authentication.class);
+        given(userService.changeRole(username, changeRoleRequest, auth)).willReturn(roleChangeResponse);
 
         // When
         MockHttpServletResponse response = mvc.perform(
@@ -136,7 +141,8 @@ class UserControllerTest {
     }
 
     @Test
-    @WithMockUser
+//    @WithMockUser
+    @WithUserDetails
     void changePassword() throws Exception {
         // Given
         Long id = 1L;
@@ -144,7 +150,8 @@ class UserControllerTest {
                 new PasswordChangeRequest("old", "new", "new");
         GenericResponse passwordChangeResponse =
                 new GenericResponse(true, "password successfully changed");
-        given(userService.changePassword(id, passwordChangeRequest)).willReturn(passwordChangeResponse);
+        Authentication auth = Mockito.mock(Authentication.class);
+        given(userService.changePassword(id, passwordChangeRequest, auth)).willReturn(passwordChangeResponse);
 
         // When
         MockHttpServletResponse response = mvc.perform(
