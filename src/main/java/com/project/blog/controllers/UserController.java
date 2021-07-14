@@ -29,7 +29,7 @@ public class UserController {
     @GetMapping("/roles")
     @PreAuthorize("hasAuthority('user:write')")
     public ResponseEntity<List<Role>> roles(@ApiParam(hidden = true) Authentication authentication){
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getRoles(authentication));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getRoles(authentication.getAuthorities()));
     }
 
     @PatchMapping("/{username}/role/change")

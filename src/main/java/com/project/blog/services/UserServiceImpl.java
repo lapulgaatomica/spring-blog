@@ -73,8 +73,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Role> getRoles(Authentication authentication) {
-        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
+    public List<Role> getRoles(Collection<? extends GrantedAuthority> authorities) {
+        if(authorities.contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
             return roleRepository.findAll();
         }
         throw new InsufficientPermissionException("You're not an admin");

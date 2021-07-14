@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface UserService {
     GenericResponse register(RegistrationRequest user);
-    List<Role> getRoles(Authentication authentication);
+    List<Role> getRoles(Collection<? extends GrantedAuthority> authorities);
     GenericResponse changeRole(String username, ChangeRoleRequest changeRoleRequest, Authentication authentication);
     GenericResponse changePassword(Long id, PasswordChangeRequest request, Authentication authentication);
     GenericResponse generatePasswordResetToken(String email);
