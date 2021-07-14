@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -42,10 +43,10 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/password/change")
-    public ResponseEntity<GenericResponse> changePassword(@ApiParam(hidden = true) Authentication authentication,
+    public ResponseEntity<GenericResponse> changePassword(@ApiParam(hidden = true) @AuthenticationPrincipal String currentlyLoggedInUser,
                                                           @PathVariable("id") Long id,
                                                           @RequestBody PasswordChangeRequest request){
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changePassword(id, request, authentication));
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userService.changePassword(id, request, currentlyLoggedInUser));
     }
 
     @PostMapping("/{email}/password/reset")

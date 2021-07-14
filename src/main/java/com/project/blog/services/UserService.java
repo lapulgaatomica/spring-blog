@@ -12,7 +12,7 @@ public interface UserService {
     GenericResponse register(RegistrationRequest user);
     List<Role> getRoles(Collection<? extends GrantedAuthority> authorities);
     GenericResponse changeRole(String username, ChangeRoleRequest changeRoleRequest, Authentication authentication);
-    GenericResponse changePassword(Long id, PasswordChangeRequest request, Authentication authentication);
+    GenericResponse changePassword(Long id, PasswordChangeRequest request, String nameOfCurrentlyLoggedInUser);
     GenericResponse generatePasswordResetToken(String email);
     GenericResponse resetPassword(String token);
     GenericResponse confirmPasswordReset(PasswordResetRequest request, String token);

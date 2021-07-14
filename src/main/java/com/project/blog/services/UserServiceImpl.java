@@ -102,11 +102,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public GenericResponse changePassword(Long id,
                                           PasswordChangeRequest request,
-                                          Authentication authentication) {
+                                          String nameOfCurrentlyLoggedInUser) {
         BlogUser user = blogUserRepository.findById(id).orElseThrow(
                 () -> new EntryNotFoundException("User with id " + id + " does not exist"));
 
-        if(authentication.getName().equals(user.getUsername())){
+        if(nameOfCurrentlyLoggedInUser.equals(user.getUsername())){
             if(passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
                 if(request.getNewPassword1().equals(request.getNewPassword2())){
                     String newPassword = passwordEncoder.encode(request.getNewPassword1());
