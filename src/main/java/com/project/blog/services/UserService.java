@@ -2,16 +2,13 @@ package com.project.blog.services;
 
 import com.project.blog.payloads.*;
 import com.project.blog.entities.Role;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
 import java.util.List;
 
 public interface UserService {
     GenericResponse register(RegistrationRequest user);
-    List<Role> getRoles(Collection<? extends GrantedAuthority> authorities);
-    GenericResponse changeRole(String username, ChangeRoleRequest changeRoleRequest, Authentication authentication);
+    List<Role> getRoles();
+    GenericResponse changeRole(String username, ChangeRoleRequest changeRoleRequest);
     GenericResponse changePassword(Long id, PasswordChangeRequest request, String nameOfCurrentlyLoggedInUser);
     GenericResponse generatePasswordResetToken(String email);
     GenericResponse resetPassword(String token);

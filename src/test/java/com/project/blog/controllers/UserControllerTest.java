@@ -1,5 +1,6 @@
 package com.project.blog.controllers;
 
+import com.project.blog.entities.BlogUser;
 import com.project.blog.entities.Role;
 import com.project.blog.entities.enums.RoleName;
 import com.project.blog.payloads.*;
@@ -8,7 +9,6 @@ import com.project.blog.services.UserDetailsServiceImpl;
 import com.project.blog.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.AutoConfigureJsonTesters;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,11 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,7 +27,6 @@ import java.util.*;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -106,16 +100,17 @@ class UserControllerTest {
         Role role2 = new Role(RoleName.COMMENT_MODERATOR);
         Role role3 = new Role(RoleName.SUPER_ADMIN);
         List<Role> roles = List.of(role, role1, role2, role3);
+        given(userService.getRoles()).willReturn(roles);
 
         // When
         MockHttpServletResponse response = mvc
-                .perform(get("/api/v1/users/roles")).andReturn().getResponse();
+                .perform(get("/api/v1/users/roles"))
+                .andReturn().getResponse();
 
         // Then
         then(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-        //Todo ensure to test the json response
-//        then(response.getContentAsString())
-//                .isEqualTo(jsonRolesResponse.write(roles).getJson());
+        then(response.getContentAsString())
+                .isEqualTo(jsonRolesResponse.write(roles).getJson());
     }
 
     @Test
@@ -127,8 +122,7 @@ class UserControllerTest {
         changeRoleRequest.setRole(RoleName.SUPER_ADMIN);
         GenericResponse roleChangeResponse = new GenericResponse(true,
                 username + "'s role was successfully changed to " + changeRoleRequest.getRole());
-        Authentication auth = Mockito.mock(Authentication.class);
-        given(userService.changeRole(username, changeRoleRequest, auth)).willReturn(roleChangeResponse);
+        given(userService.changeRole(username, changeRoleRequest)).willReturn(roleChangeResponse);
 
         // When
         MockHttpServletResponse response = mvc.perform(
@@ -139,9 +133,7 @@ class UserControllerTest {
 
         // Then
         then(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
-        //Todo ensure to test the json response
-//        then(response.getContentAsString())
-//                .isEqualTo(jsonGenericResponse.write(roleChangeResponse).getJson());
+        then(response.getContentAsString()).isEqualTo(jsonGenericResponse.write(roleChangeResponse).getJson());
     }
 
     @Test
@@ -149,12 +141,13 @@ class UserControllerTest {
     void changePassword() throws Exception {
         // Given
         Long id = 1L;
+        BlogUser user = new BlogUser();
         PasswordChangeRequest passwordChangeRequest =
                 new PasswordChangeRequest("old", "new", "new");
         GenericResponse passwordChangeResponse =
                 new GenericResponse(true, "password successfully changed");
-//        Authentication auth = Mockito.mock(Authentication.class);
-        given(userService.changePassword(id, passwordChangeRequest, "user")).willReturn(passwordChangeResponse);
+        given(userService.changePassword(id, passwordChangeRequest, user.getUsername()))
+                .willReturn(passwordChangeResponse);
 
         // When
         MockHttpServletResponse response = mvc.perform(
@@ -165,8 +158,7 @@ class UserControllerTest {
 
         // Then
         then(response.getStatus()).isEqualTo(HttpStatus.ACCEPTED.value());
-        //Todo ensure to test the json response
-//        then(response.getContentAsString()).isEqualTo(jsonGenericResponse.write(passwordChangeResponse).getJson());
+        then(response.getContentAsString()).isEqualTo(jsonGenericResponse.write(passwordChangeResponse).getJson());
     }
 
     @Test

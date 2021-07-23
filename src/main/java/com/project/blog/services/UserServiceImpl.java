@@ -11,15 +11,10 @@ import com.project.blog.repositories.PasswordResetTokenRepository;
 import com.project.blog.repositories.RoleRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -73,35 +68,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<Role> getRoles(Collection<? extends GrantedAuthority> authorities) {
-        if(authorities.contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
-            return roleRepository.findAll();
-        }
-        throw new InsufficientPermissionException("You're not an admin");
+    public List<Role> getRoles() {
+        return roleRepository.findAll();
     }
 
     @Override
-    public GenericResponse changeRole(String username,
-                                      ChangeRoleRequest changeRoleRequest,
-                                      Authentication authentication) {
+    public GenericResponse changeRole(String username, ChangeRoleRequest changeRoleRequest) {
+        BlogUser user = blogUserRepository.findByUsername(username).orElseThrow(
+                () -> new EntryNotFoundException("User " + username + " not found"));
+        user.setRole(roleRepository.findByName(changeRoleRequest.getRole()).orElseThrow(
+                        () -> new EntryNotFoundException("role with name " + changeRoleRequest.getRole() + " does not exist")));
+        blogUserRepository.save(user);
 
-
-        if(authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + SUPER_ADMIN.name()))){
-            BlogUser user = blogUserRepository.findByUsername(username).orElseThrow(
-                    () -> new EntryNotFoundException("User " + username + " not found"));
-            user.setRole(roleRepository.findByName(changeRoleRequest.getRole()).orElseThrow(
-                            () -> new EntryNotFoundException("role with name " + changeRoleRequest.getRole() + " does not exist")));
-            blogUserRepository.save(user);
-            return new GenericResponse(true,
-                    username + "'s role was successfully changed to " + changeRoleRequest.getRole());
-        }
-
-        throw new InsufficientPermissionException("You're not an admin");
+        return new GenericResponse(true,
+                username + "'s role was successfully changed to " + changeRoleRequest.getRole());
     }
 
     @Override
-    public GenericResponse changePassword(Long id,
-                                          PasswordChangeRequest request,
+    public GenericResponse changePassword(Long id, PasswordChangeRequest request,
                                           String nameOfCurrentlyLoggedInUser) {
         BlogUser user = blogUserRepository.findById(id).orElseThrow(
                 () -> new EntryNotFoundException("User with id " + id + " does not exist"));
