@@ -1,11 +1,9 @@
 package com.project.blog.services;
 
 import com.project.blog.entities.BlogUser;
+import com.project.blog.entities.PasswordResetToken;
 import com.project.blog.entities.Role;
-import com.project.blog.entities.enums.RoleName;
-import com.project.blog.payloads.ChangeRoleRequest;
-import com.project.blog.payloads.PasswordChangeRequest;
-import com.project.blog.payloads.RegistrationRequest;
+import com.project.blog.payloads.*;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.PasswordResetTokenRepository;
 import com.project.blog.repositories.RoleRepository;
@@ -18,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.project.blog.entities.enums.RoleName.SUPER_ADMIN;
@@ -42,10 +41,14 @@ class UserServiceTest {
     @Mock
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
+    @Mock
+    private GenericResponse response;
+
     @Captor
     private ArgumentCaptor<BlogUser> userArgumentCaptor;
 
-
+    @Captor
+    private ArgumentCaptor<PasswordResetToken> tokenArgumentCaptor;
 
     private UserService userService;
 
@@ -128,13 +131,52 @@ class UserServiceTest {
 
     @Test
     void generatePasswordResetToken() {
+        // Given
+        BlogUser user = new BlogUser("user", "email@email.com", "password");
+        given(blogUserRepository.findByEmail(user.getEmail())).willReturn(Optional.of(user));
+        PasswordResetToken resetToken = new PasswordResetToken("token", user, LocalDateTime.now().plusMinutes(10));
+
+        // When
+        userService.generatePasswordResetToken(user.getEmail());
+
+        // Then
+        then(passwordResetTokenRepository).should().save(tokenArgumentCaptor.capture());
+        PasswordResetToken tokenCaptorValue = tokenArgumentCaptor.getValue();
+        assertThat(tokenCaptorValue).usingRecursiveComparison()
+                .ignoringFieldsOfTypes(LocalDateTime.class) //Any date property has to be ignored
+                .ignoringFields("token") //Token has to be ignored as well, because it's a random uuid value, not reproducible
+                .isEqualTo(resetToken);
     }
 
     @Test
     void resetPassword() {
+        // Given
+        BlogUser user = new BlogUser("user", "email@email.com", "password");
+        PasswordResetToken resetToken = new PasswordResetToken("token", user, LocalDateTime.now().plusMinutes(10));
+        given(passwordResetTokenRepository.findByToken("token")).willReturn(Optional.of(resetToken));
+
+        // When
+        response = userService.resetPassword(resetToken.getToken());
+
+        // Then
+        verify(response.getSuccess()).equals(true);
     }
 
     @Test
     void confirmPasswordReset() {
+        // Given
+        BlogUser user = new BlogUser("user", "email@email.com", "password");
+        PasswordResetToken resetToken = new PasswordResetToken("token", user, LocalDateTime.now().plusMinutes(10));
+        given(passwordResetTokenRepository.findByToken(resetToken.getToken())).willReturn(Optional.of(resetToken));
+        PasswordResetRequest request = new PasswordResetRequest("new-password", "new-password");
+
+        // When
+        userService.confirmPasswordReset(request, "token");
+
+        // Then
+        then(blogUserRepository).should().save(userArgumentCaptor.capture());
+        BlogUser userArgumentCaptorValue = userArgumentCaptor.getValue();
+        assertThat(userArgumentCaptorValue).usingRecursiveComparison().isEqualTo(user);
+        verify(passwordResetTokenRepository).delete(resetToken);
     }
 }
