@@ -119,17 +119,17 @@ public class UserServiceImpl implements UserService {
         PasswordResetToken passwordResetToken = new PasswordResetToken(token, user, expiresAt);
 
         passwordResetTokenRepository.save(passwordResetToken);
-        log.info("127.0.0.1:8080/api/v1/users/password/reset?token=" + token);
+        //log.info("127.0.0.1:8080/api/v1/users/password/reset?token=" + token);
         // Todo: Actually send email
         return new GenericResponse(true, "please check your email for steps to reset your password");
     }
 
     @Override
     public GenericResponse resetPassword(String token) {
-        // This function basically just ensures the token exists in the db and throws an exception otherwise
+        // This function basically just ensures the token exists in the db or throws an exception otherwise
         passwordResetTokenRepository
                 .findByToken(token).orElseThrow(() -> new EntryNotFoundException("Invalid token"));
-        log.info("127.0.0.1:8080/api/v1/users/password/reset/confirm?token=" + token);
+        //log.info("127.0.0.1:8080/api/v1/users/password/reset/confirm?token=" + token);
         return new GenericResponse(true, "Please reset your password");
     }
 

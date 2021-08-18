@@ -41,9 +41,6 @@ class UserServiceTest {
     @Mock
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
-    @Mock
-    private GenericResponse response;
-
     @Captor
     private ArgumentCaptor<BlogUser> userArgumentCaptor;
 
@@ -156,10 +153,10 @@ class UserServiceTest {
         given(passwordResetTokenRepository.findByToken("token")).willReturn(Optional.of(resetToken));
 
         // When
-        response = userService.resetPassword(resetToken.getToken());
+        userService.resetPassword(resetToken.getToken());
 
         // Then
-        verify(response.getSuccess()).equals(true);
+        then(passwordResetTokenRepository).should().findByToken(resetToken.getToken());
     }
 
     @Test
