@@ -7,6 +7,7 @@ import com.project.blog.payloads.LoginResponse;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,6 +51,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
             return authenticate;
         }catch (Exception e){
             response.setContentType(APPLICATION_JSON_VALUE);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             new ObjectMapper().writeValue(response.getOutputStream(), new GenericResponse(false, e.getMessage()));
             return null;
         }
@@ -70,6 +72,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .compact();
 
         response.setContentType(APPLICATION_JSON_VALUE);
+        response.setStatus(HttpStatus.OK.value());
         new ObjectMapper().writeValue(response.getOutputStream(),
                 new LoginResponse(true, jwtConfigProperties.getTokenPrefix() + token));
     }
