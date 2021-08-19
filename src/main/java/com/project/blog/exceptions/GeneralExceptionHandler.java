@@ -3,6 +3,7 @@ package com.project.blog.exceptions;
 import com.project.blog.payloads.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -52,5 +53,13 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse response = new ExceptionResponse(
                 e.getMessage(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler({AccessDeniedException.class})
+    @ResponseBody
+    public ResponseEntity<Object> accessDeniedException(AccessDeniedException e){
+        ExceptionResponse response = new ExceptionResponse(
+                e.getMessage(), HttpStatus.FORBIDDEN, LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 }

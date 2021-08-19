@@ -1,11 +1,14 @@
 package com.project.blog.security;
 
-import com.project.blog.exceptions.InvalidTokenException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.blog.payloads.GenericResponse;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AllArgsConstructor
 public class JwtTokenVerifier extends OncePerRequestFilter {
@@ -66,8 +71,10 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        }catch (JwtException e){
-            throw new InvalidTokenException("Token " + token + " cannot be trusted");
+        }catch (JwtException | AccessDeniedException e){
+            response.setContentType(APPLICATION_JSON_VALUE);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            new ObjectMapper().writeValue(response.getOutputStream(), new GenericResponse(false, e.getMessage()));
         }
 
         filterChain.doFilter(request, response);
