@@ -1,9 +1,12 @@
 package com.project.blog.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.blog.payloads.GenericResponse;
 import com.project.blog.payloads.LoginRequest;
+import com.project.blog.payloads.LoginResponse;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -12,12 +15,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.crypto.SecretKey;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Date;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @AllArgsConstructor
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -28,6 +32,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
 
 
+    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
@@ -43,8 +48,10 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
             Authentication authenticate = authenticationManager.authenticate(authentication);
             return authenticate;
-        }catch (IOException e){
-            throw new RuntimeException(e);
+        }catch (Exception e){
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(), new GenericResponse(false, e.getMessage()));
+            return null;
         }
     }
 
@@ -52,7 +59,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
                                             FilterChain chain,
-                                            Authentication authResult) throws IOException, ServletException {
+                                            Authentication authResult) throws IOException{
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
@@ -62,6 +69,8 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .signWith(secretKey)
                 .compact();
 
-        response.addHeader("Authorization", jwtConfigProperties.getTokenPrefix() + token);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(),
+                new LoginResponse(true, jwtConfigProperties.getTokenPrefix() + token));
     }
 }
