@@ -3,6 +3,7 @@ package com.project.blog.controllers;
 import com.project.blog.payloads.CommentRequest;
 import com.project.blog.services.CommentService;
 import com.project.blog.entities.Comment;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,7 +22,7 @@ public class CommentController {
     @PostMapping
     public ResponseEntity<Comment> newComment(@PathVariable("postId") Long postId,
                                               @RequestBody CommentRequest comment,
-                                              @AuthenticationPrincipal String user){
+                                              @ApiParam(hidden = true) @AuthenticationPrincipal String user){
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.newComment(postId, comment, user));
     }
 
@@ -32,15 +34,15 @@ public class CommentController {
     @PatchMapping("/{id}")
     public ResponseEntity<Comment> updateComment(@PathVariable("id") Long id,
                                                  @RequestBody CommentRequest commentRequest,
-                                                 @AuthenticationPrincipal String user){
+                                                 @ApiParam(hidden = true) @AuthenticationPrincipal String user){
         return ResponseEntity.status(HttpStatus.OK).body(commentService.updateComment(id, commentRequest, user));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') or hasAuthority('comment:write')")
     public ResponseEntity<?> deleteComment(@PathVariable("id") Long id,
-                                           Authentication authentication){
+                                           @ApiIgnore Authentication authentication){
         commentService.deleteComment(id, authentication.getName(), authentication.getAuthorities());
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -51,7 +52,7 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_USER') or hasAuthority('post:write')")
-    public ResponseEntity<?> deleteBlogPost(@ApiParam(hidden = true) Authentication authentication,
+    public ResponseEntity<?> deleteBlogPost(@ApiIgnore Authentication authentication,
                                             @PathVariable("id") Long id){
         postService.deleteBlogPost(id, authentication.getName(), authentication.getAuthorities());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
