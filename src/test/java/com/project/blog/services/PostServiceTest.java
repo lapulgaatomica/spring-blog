@@ -104,7 +104,7 @@ public class PostServiceTest {
         // When
         Post updatedPost = postService.updateBlogPost(id, postRequest, user.getUsername());
 
-        //
+        // Then
         assertThat(updatedPost.getTitle()).isEqualTo(postRequest.getTitle());
         assertThat(updatedPost.getContent()).isEqualTo(postRequest.getContent());
         assertThat(updatedPost.getDateEdited()).isAfter(post.getDateCreated());

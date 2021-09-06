@@ -106,7 +106,6 @@ class CommentServiceTest {
         Comment comment = new Comment(null, "content", post, user);
         given(commentRepository.findById(1L)).willReturn(Optional.of(comment));
 
-
         // When
         commentService.deleteComment(1L, user.getUsername(), Set.of(new SimpleGrantedAuthority("comment:write")));
 
