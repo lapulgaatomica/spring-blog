@@ -14,12 +14,12 @@ Java 11, Maven, PostgreSql
 
 3:  If the following commands work, you can take this app for a spin
 
-        _$ git clone https://github.com/lapulgaatomica/spring-blog.git_
+        $ git clone https://github.com/lapulgaatomica/spring-blog.git
         
-        _$ cd spring-blog_
+        $ cd spring-blog
         
-        _$ ./mvnw clean package_
+        $ ./mvnw clean package
         
-        _$ cd target_
+        $ cd target
         
-        _$ java -jar blog-0.0.1-SNAPSHOT.jar_
+        $ java -jar blog-0.0.1-SNAPSHOT.jar
