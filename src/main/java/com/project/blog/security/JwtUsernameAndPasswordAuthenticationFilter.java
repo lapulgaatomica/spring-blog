@@ -31,13 +31,12 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
     private final JwtConfigProperties jwtConfigProperties;
     private final SecretKey secretKey;
 
-
-
     @SneakyThrows
+    /* method annotated with @SneakyThrows because response.getOutputStream() throws IOException that couldn't be thrown
+     by the method declaration because it wasn't thrown in the overridden method*/
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
-
         try {
             LoginRequest loginRequest = new ObjectMapper()
                     .readValue(request.getInputStream(), LoginRequest.class);
@@ -47,8 +46,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                     loginRequest.getPassword()
             );
 
-            Authentication authenticate = authenticationManager.authenticate(authentication);
-            return authenticate;
+            return authenticationManager.authenticate(authentication);
         }catch (Exception e){
             response.setContentType(APPLICATION_JSON_VALUE);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

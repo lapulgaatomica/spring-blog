@@ -13,7 +13,7 @@ import javax.crypto.SecretKey;
 public class JwtSecretKey {
     private final JwtConfigProperties jwtConfigProperties;
 
-    @Bean
+    @Bean//Bean that injects the signing key for the JWT token(I know, tautology)
     public SecretKey secretKey(){
         return Keys.hmacShaKeyFor(jwtConfigProperties.getSecretKey().getBytes());
     }

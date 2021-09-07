@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class JsonConfiguration {
+    //customizes our JSON serialization so it can handle Hibernate objects
+    //helps to prevent error when some entities are fetched in lazy mode
     @Bean
     public Module hibernateModule(){
         return new Hibernate5Module();

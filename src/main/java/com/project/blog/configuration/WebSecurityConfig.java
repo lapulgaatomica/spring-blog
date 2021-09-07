@@ -73,6 +73,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     public JwtUsernameAndPasswordAuthenticationFilter jwtUsernameAndPasswordAuthenticationFilter() throws Exception {
+        /* Could have just passed new JwtUsernameAndPasswordAuthenticationFilter(
+        authenticationManager(), jwtConfigProperties, secretKey) to addFilter() in the configure method but
+         I wouldn't have been able to set filter processor Url there*/
          JwtUsernameAndPasswordAuthenticationFilter filter = new JwtUsernameAndPasswordAuthenticationFilter(
                 authenticationManager(), jwtConfigProperties, secretKey);
         filter.setFilterProcessesUrl("/api/v1/users/login");
