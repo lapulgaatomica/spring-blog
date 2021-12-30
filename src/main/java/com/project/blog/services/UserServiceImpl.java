@@ -9,26 +9,29 @@ import com.project.blog.entities.enums.RoleName;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.PasswordResetTokenRepository;
 import com.project.blog.repositories.RoleRepository;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import static com.project.blog.entities.enums.RoleName.*;
 
-@AllArgsConstructor
 @Service
-@Slf4j
 public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final BlogUserRepository blogUserRepository;
     private final RoleRepository roleRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+
+    public UserServiceImpl(PasswordEncoder passwordEncoder, BlogUserRepository blogUserRepository,
+                           RoleRepository roleRepository, PasswordResetTokenRepository passwordResetTokenRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.blogUserRepository = blogUserRepository;
+        this.roleRepository = roleRepository;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
+    }
 
     @Override
     public GenericResponse register(RegistrationRequest registrationRequest) {

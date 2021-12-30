@@ -10,7 +10,6 @@ import com.project.blog.payloads.PostWithCommentsResponse;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,16 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final BlogUserRepository userRepository;
+
+    public PostServiceImpl(PostRepository postRepository, CommentRepository commentRepository, BlogUserRepository userRepository) {
+        this.postRepository = postRepository;
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public List<Post> getBlogPosts() {
@@ -74,7 +78,6 @@ public class PostServiceImpl implements PostService {
                                Collection<? extends GrantedAuthority> authoritiesOfCurrentlyLoggedInUser) {
         Post post = postRepository.findById(id).
                 orElseThrow(() -> new EntryNotFoundException("Blog post with ID " + id + " does not exist"));
-
 
         if(authoritiesOfCurrentlyLoggedInUser.contains(new SimpleGrantedAuthority("post:write")) ||
                 nameOfCurrentlyLoggedInUser.equals(post.getCreator().getUsername())){

@@ -9,7 +9,6 @@ import com.project.blog.payloads.CommentRequest;
 import com.project.blog.repositories.BlogUserRepository;
 import com.project.blog.repositories.CommentRepository;
 import com.project.blog.repositories.PostRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -19,12 +18,17 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 
 @Service
-@RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService{
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final BlogUserRepository userRepository;
+
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, BlogUserRepository userRepository) {
+        this.commentRepository = commentRepository;
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public Comment newComment(Long postId, CommentRequest commentRequest, String user) {

@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@Configuration //SwaggerUI configuration class
+@Configuration
 public class SpringFoxConfig {
     @Bean
     public Docket api(){

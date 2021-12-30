@@ -4,7 +4,6 @@ import com.project.blog.security.JwtConfigProperties;
 import com.project.blog.security.JwtTokenVerifier;
 import com.project.blog.security.JwtUsernameAndPasswordAuthenticationFilter;
 import com.project.blog.services.UserDetailsServiceImpl;
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,7 +20,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.crypto.SecretKey;
 
 @Configuration
-@AllArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -29,6 +27,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final SecretKey secretKey;
     private final JwtConfigProperties jwtConfigProperties;
+
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsServiceImpl, SecretKey secretKey, JwtConfigProperties jwtConfigProperties) {
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.secretKey = secretKey;
+        this.jwtConfigProperties = jwtConfigProperties;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -5,8 +5,6 @@ import com.project.blog.payloads.GenericResponse;
 import com.project.blog.payloads.LoginRequest;
 import com.project.blog.payloads.LoginResponse;
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,14 +22,19 @@ import java.util.Date;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-@AllArgsConstructor
 public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JwtConfigProperties jwtConfigProperties;
     private final SecretKey secretKey;
 
-    @SneakyThrows
+    public JwtUsernameAndPasswordAuthenticationFilter(AuthenticationManager authenticationManager, JwtConfigProperties jwtConfigProperties, SecretKey secretKey) {
+        this.authenticationManager = authenticationManager;
+        this.jwtConfigProperties = jwtConfigProperties;
+        this.secretKey = secretKey;
+    }
+
+//    @SneakyThrows
     /* method annotated with @SneakyThrows because response.getOutputStream() throws IOException that couldn't be thrown
      by the method declaration because it wasn't thrown in the overridden method*/
     @Override
@@ -50,7 +53,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
         }catch (Exception e){
             response.setContentType(APPLICATION_JSON_VALUE);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            new ObjectMapper().writeValue(response.getOutputStream(), new GenericResponse(false, e.getMessage()));
+            try {
+                new ObjectMapper().writeValue(response.getOutputStream(), new GenericResponse(false, e.getMessage()));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             return null;
         }
     }

@@ -95,7 +95,7 @@ class CommentServiceTest {
 
         // Then
         assertThat(updatedComment.getContent()).isEqualTo(commentRequest.getContent());
-        assertThat(updatedComment.getDateEdited()).isAfter(post.getDateCreated());
+        assertThat(updatedComment.getDateEdited()).isAfterOrEqualTo(post.getDateCreated());
     }
 
     @Test
